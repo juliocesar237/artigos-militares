@@ -3,7 +3,6 @@ let categoriaAtual = 'todas';
 let patenteAtual = 'todas';
 let carrinho = [];
 
-// Carrega os produtos salvos no localStorage (caso o admin tenha alterado) ou usa o padrão do produtos.js
 let listaProdutosAtual = [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,13 +25,10 @@ function verificarAutenticacao() {
 }
 
 function inicializarSistema(usuario) {
-    // Carrega preços salvos ou do arquivo global
-    const precosSalvos = JSON.parse(localStorage.getItem('produtosPrecosPersonalizados'));
-    if (precosSalvos && typeof produtos !== 'undefined') {
-        listaProdutosAtual = produtos.map(p => {
-            const salvo = precosSalvos.find(s => s.id === p.id);
-            return salvo ? { ...p, preco: salvo.preco } : p;
-        });
+    const produtosSalvos = JSON.parse(localStorage.getItem('produtosCadastradosPersonalizados'));
+    
+    if (produtosSalvos && typeof produtos !== 'undefined') {
+        listaProdutosAtual = produtosSalvos;
     } else {
         listaProdutosAtual = typeof produtos !== 'undefined' ? [...produtos] : [];
     }
@@ -41,7 +37,6 @@ function inicializarSistema(usuario) {
     renderizarLoja();
 }
 
-// Cria o layout base da loja e insere botão de Painel Admin se for o caso
 function renderizarEstruturaLoja(isAdmin) {
     const container = document.getElementById('conteudo-principal');
     if (!container) return;
@@ -51,7 +46,7 @@ function renderizarEstruturaLoja(isAdmin) {
         botaoAdminHtml = `
             <div style="text-align: right; margin-bottom: 15px;">
                 <button onclick="alternarPainelAdmin()" style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                    ⚙️ PAINEL ADMIN: ALTERAR PREÇOS
+                    ⚙️ PAINEL ADMIN: GERENCIAR PRODUTOS
                 </button>
                 <button onclick="fazerLogout()" style="background: #7f8c8d; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-left: 5px;">
                     Sair
@@ -94,7 +89,6 @@ function renderizarEstruturaLoja(isAdmin) {
     `;
 }
 
-// --- RENDERIZAÇÃO DA LOJA ---
 function renderizarLoja() {
     const container = document.getElementById('lista-produtos');
     if (!container) return;
@@ -110,10 +104,7 @@ function renderizarLoja() {
         const patProduto = (p.patente || '').trim().toLowerCase();
         const tituloLower = (p.titulo || '').toLowerCase();
         
-        // Categoria: aceita se for 'todas', 'todos' ou bater com a categoria do produto
         const catOk = (categoriaAtual === 'todas' || categoriaAtual === 'todos' || catProduto === categoriaAtual);
-        
-        // Patente: aceita se for 'todas' OU se bater exatamente com a patente do produto OU se o produto não tiver patente restrita
         const patOk = (patenteAtual === 'todas' || patProduto === patenteAtual || !p.patente);
         
         if (catOk && patOk) {
@@ -146,7 +137,6 @@ function renderizarLoja() {
                 }
             }
 
-            // Lógica para definir se o placeholder exibe exemplo de targeta ou apenas "Nome"
             const ehTargeta = tituloLower.includes('targeta') || tituloLower.includes('tarjeta');
             const placeholderTexto = ehTargeta ? 'Ex: CB PM BELTRAME' : 'Nome';
 
@@ -154,7 +144,7 @@ function renderizarLoja() {
             <div class="card-produto" data-id="${p.id}">
                 ${p.imagem ? `<img src="${p.imagem}" alt="${p.titulo}">` : ''}
                 <h4>${p.titulo}</h4>
-                <div class="preco">R$ ${p.preco ? p.preco.toFixed(2) : "0.00"}</div>
+                <div class="preco">R$ ${p.preco ? Number(p.preco).toFixed(2) : "0.00"}</div>
                 ${p.personalizavel ? `<input type="text" id="nome-${p.id}" class="input-nome" placeholder="${placeholderTexto}" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">` : ''}
                 ${htmlTamanho}
                 <button class="btn-acao" onclick="adicionarAoCarrinho(${p.id})">ADICIONAR</button>
@@ -163,7 +153,6 @@ function renderizarLoja() {
     });
 }
 
-// --- PAINEL DE ALTERAÇÃO DE PREÇOS (ADMIN) ---
 function alternarPainelAdmin() {
     const painel = document.getElementById('painel-admin-container');
     if (!painel) return;
@@ -181,9 +170,27 @@ function renderizarConteudoAdmin() {
     if (!painel) return;
 
     let html = `
-        <h3 style="margin-top:0; color: #2c3e50;">Gerenciamento de Preços</h3>
-        <p style="font-size: 14px; color: #333; font-weight: 500;">Altere os valores abaixo e clique em salvar para atualizar os preços na loja instantaneamente.</p>
-        <div style="max-height: 300px; overflow-y: auto; margin-bottom: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
+        <h3 style="margin-top:0; color: #2c3e50;">Painel do Administrador</h3>
+        
+        <div style="background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color: #27ae60;">➕ Adicionar Novo Produto</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="novo-titulo" placeholder="Nome do Produto" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="number" step="0.01" id="novo-preco" placeholder="Preço (R$)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="novo-categoria" placeholder="Categoria (ex: Bordados)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="novo-patente" placeholder="Patente (opcional, ex: sd)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" id="novo-imagem" placeholder="URL da Imagem (opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; grid-column: span 2;">
+            </div>
+            <div style="margin-bottom: 10px; font-size: 13px; color: #555;">
+                <label style="margin-right: 15px;"><input type="checkbox" id="novo-personalizavel"> Permite digitar nome/tarjeta?</label>
+                <label><input type="checkbox" id="novo-tamanho" checked> Possui tamanhos (P, M, G...)?</label>
+            </div>
+            <button onclick="adicionarNovoProdutoAdmin()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">Cadastrar Produto</button>
+        </div>
+
+        <h4 style="color: #2c3e50; margin-bottom: 5px;">Gerenciamento de Preços</h4>
+        <p style="font-size: 13px; color: #333; margin-bottom: 10px;">Altere os valores abaixo e clique em salvar para atualizar os preços na loja instantaneamente.</p>
+        <div style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: #2c3e50; color: white; text-align: left;">
@@ -209,10 +216,45 @@ function renderizarConteudoAdmin() {
                 </tbody>
             </table>
         </div>
-        <button onclick="salvarNovosPrecos()" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">Salvar Alterações de Preço</button>
+        <button onclick="salvarNovosPrecos()" style="background: #2980b9; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">Salvar Alterações de Preço</button>
     `;
 
     painel.innerHTML = html;
+}
+
+function adicionarNovoProdutoAdmin() {
+    const titulo = document.getElementById('novo-titulo').value.trim();
+    const preco = parseFloat(document.getElementById('novo-preco').value);
+    const categoria = document.getElementById('novo-categoria').value.trim();
+    const patente = document.getElementById('novo-patente').value.trim();
+    const imagem = document.getElementById('novo-imagem').value.trim();
+    const personalizavel = document.getElementById('novo-personalizavel').checked;
+    const tamanho = document.getElementById('novo-tamanho').checked;
+
+    if (!titulo || isNaN(preco) || !categoria) {
+        alert("Preencha pelo menos o Título, o Preço e a Categoria do produto!");
+        return;
+    }
+
+    const novoId = Date.now();
+
+    const novoProduto = {
+        id: novoId,
+        titulo: titulo,
+        preco: preco,
+        categoria: categoria,
+        patente: patente || "",
+        imagem: imagem || "",
+        personalizavel: personalizavel,
+        tamanho: tamanho
+    };
+
+    listaProdutosAtual.push(novoProduto);
+    localStorage.setItem('produtosCadastradosPersonalizados', JSON.stringify(listaProdutosAtual));
+
+    alert("Produto cadastrado com sucesso!");
+    renderizarLoja();
+    renderizarConteudoAdmin();
 }
 
 function salvarNovosPrecos() {
@@ -226,9 +268,7 @@ function salvarNovosPrecos() {
         }
     });
 
-    // Salva a alteração no navegador
-    const dadosParaSalvar = listaProdutosAtual.map(p => ({ id: p.id, preco: p.preco }));
-    localStorage.setItem('produtosPrecosPersonalizados', JSON.stringify(dadosParaSalvar));
+    localStorage.setItem('produtosCadastradosPersonalizados', JSON.stringify(listaProdutosAtual));
 
     alert("Preços atualizados com sucesso!");
     renderizarLoja();
@@ -240,7 +280,6 @@ function fazerLogout() {
     window.location.reload();
 }
 
-// --- FILTRAGEM E CARRINHO ---
 function filtrar(tipo, valor, btn) {
     if (tipo === 'categoria') categoriaAtual = valor.toLowerCase();
     if (tipo === 'patente') patenteAtual = valor.toLowerCase();
