@@ -46,7 +46,7 @@ function renderizarEstruturaLoja(isAdmin) {
         botaoAdminHtml = `
             <div style="text-align: right; margin-bottom: 15px;">
                 <button onclick="alternarPainelAdmin()" style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                    ⚙️ PAINEL ADMIN: GERENCIAR PRODUTOS
+                    ⚙️ PAINEL ADMIN: GERENCIAR PRODUTOS E PROMOÇÕES
                 </button>
                 <button onclick="fazerLogout()" style="background: #7f8c8d; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-left: 5px;">
                     Sair
@@ -140,11 +140,27 @@ function renderizarLoja() {
             const ehTargeta = tituloLower.includes('targeta') || tituloLower.includes('tarjeta');
             const placeholderTexto = ehTargeta ? 'Ex: CB PM BELTRAME' : 'Nome';
 
+            // Lógica de exibição de preço e promoção
+            let htmlPreco = '';
+            const precoNum = Number(p.preco) || 0;
+            const precoPromoNum = p.precoPromocional ? Number(p.precoPromocional) : null;
+
+            if (precoPromoNum && precoPromoNum > 0 && precoPromoNum < precoNum) {
+                htmlPreco = `
+                    <div class="preco" style="display: flex; gap: 8px; align-items: center; justify-content: center;">
+                        <span style="text-decoration: line-through; color: #999; font-size: 0.85em;">R$ ${precoNum.toFixed(2)}</span>
+                        <span style="color: #e74c3c; font-weight: bold;">R$ ${precoPromoNum.toFixed(2)}</span>
+                    </div>
+                `;
+            } else {
+                htmlPreco = `<div class="preco">R$ ${precoNum.toFixed(2)}</div>`;
+            }
+
             container.innerHTML += `
             <div class="card-produto" data-id="${p.id}">
                 ${p.imagem ? `<img src="${p.imagem}" alt="${p.titulo}">` : ''}
                 <h4>${p.titulo}</h4>
-                <div class="preco">R$ ${p.preco ? Number(p.preco).toFixed(2) : "0.00"}</div>
+                ${htmlPreco}
                 ${p.personalizavel ? `<input type="text" id="nome-${p.id}" class="input-nome" placeholder="${placeholderTexto}" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">` : ''}
                 ${htmlTamanho}
                 <button class="btn-acao" onclick="adicionarAoCarrinho(${p.id})">ADICIONAR</button>
@@ -176,7 +192,8 @@ function renderizarConteudoAdmin() {
             <h4 style="margin-top:0; color: #27ae60;">➕ Adicionar Novo Produto</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                 <input type="text" id="novo-titulo" placeholder="Nome do Produto" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                <input type="number" step="0.01" id="novo-preco" placeholder="Preço (R$)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="number" step="0.01" id="novo-preco" placeholder="Preço Normal (R$)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="number" step="0.01" id="novo-preco-promo" placeholder="Preço Promocional (Opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-categoria" placeholder="Categoria (ex: Bordados)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-patente" placeholder="Patente (opcional, ex: sd)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-imagem" placeholder="URL da Imagem (opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; grid-column: span 2;">
@@ -188,14 +205,15 @@ function renderizarConteudoAdmin() {
             <button onclick="adicionarNovoProdutoAdmin()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">Cadastrar Produto</button>
         </div>
 
-        <h4 style="color: #2c3e50; margin-bottom: 5px;">Gerenciamento de Preços</h4>
-        <p style="font-size: 13px; color: #333; margin-bottom: 10px;">Altere os valores abaixo e clique em salvar para atualizar os preços na loja instantaneamente.</p>
+        <h4 style="color: #2c3e50; margin-bottom: 5px;">Gerenciamento de Preços e Promoções</h4>
+        <p style="font-size: 13px; color: #333; margin-bottom: 10px;">Altere o preço normal ou defina/limpe o preço promocional de cada item.</p>
         <div style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: #2c3e50; color: white; text-align: left;">
                         <th style="padding: 10px;">Produto</th>
-                        <th style="padding: 10px; width: 120px;">Preço (R$)</th>
+                        <th style="padding: 10px; width: 110px;">Preço (R$)</th>
+                        <th style="padding: 10px; width: 110px;">Preço Promo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,6 +226,9 @@ function renderizarConteudoAdmin() {
                 <td style="padding: 10px;">
                     <input type="number" step="0.01" id="admin-preco-${p.id}" value="${p.preco}" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #000;">
                 </td>
+                <td style="padding: 10px;">
+                    <input type="number" step="0.01" id="admin-promo-${p.id}" value="${p.precoPromocional !== undefined && p.precoPromocional !== null ? p.precoPromocional : ''}" placeholder="Vazio = Sem promo" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #e74c3c;">
+                </td>
             </tr>
         `;
     });
@@ -216,7 +237,7 @@ function renderizarConteudoAdmin() {
                 </tbody>
             </table>
         </div>
-        <button onclick="salvarNovosPrecos()" style="background: #2980b9; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">Salvar Alterações de Preço</button>
+        <button onclick="salvarNovosPrecos()" style="background: #2980b9; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">Salvar Alterações de Preços e Promoções</button>
     `;
 
     painel.innerHTML = html;
@@ -225,6 +246,7 @@ function renderizarConteudoAdmin() {
 function adicionarNovoProdutoAdmin() {
     const titulo = document.getElementById('novo-titulo').value.trim();
     const preco = parseFloat(document.getElementById('novo-preco').value);
+    const precoPromoInput = document.getElementById('novo-preco-promo').value.trim();
     const categoria = document.getElementById('novo-categoria').value.trim();
     const patente = document.getElementById('novo-patente').value.trim();
     const imagem = document.getElementById('novo-imagem').value.trim();
@@ -232,16 +254,18 @@ function adicionarNovoProdutoAdmin() {
     const tamanho = document.getElementById('novo-tamanho').checked;
 
     if (!titulo || isNaN(preco) || !categoria) {
-        alert("Preencha pelo menos o Título, o Preço e a Categoria do produto!");
+        alert("Preencha pelo menos o Título, o Preço Normal e a Categoria do produto!");
         return;
     }
 
     const novoId = Date.now();
+    const precoPromocional = precoPromoInput !== '' ? parseFloat(precoPromoInput) : null;
 
     const novoProduto = {
         id: novoId,
         titulo: titulo,
         preco: preco,
+        precoPromocional: isNaN(precoPromocional) ? null : precoPromocional,
         categoria: categoria,
         patente: patente || "",
         imagem: imagem || "",
@@ -259,18 +283,30 @@ function adicionarNovoProdutoAdmin() {
 
 function salvarNovosPrecos() {
     listaProdutosAtual.forEach(p => {
-        const input = document.getElementById(`admin-preco-${p.id}`);
-        if (input) {
-            const novoValor = parseFloat(input.value);
+        const inputPreco = document.getElementById(`admin-preco-${p.id}`);
+        const inputPromo = document.getElementById(`admin-promo-${p.id}`);
+
+        if (inputPreco) {
+            const novoValor = parseFloat(inputPreco.value);
             if (!isNaN(novoValor)) {
                 p.preco = novoValor;
+            }
+        }
+
+        if (inputPromo) {
+            const valorPromoText = inputPromo.value.trim();
+            if (valorPromoText === '') {
+                p.precoPromocional = null; // Remove a promoção se o campo estiver vazio
+            } else {
+                const novoPromoValor = parseFloat(valorPromoText);
+                p.precoPromocional = isNaN(novoPromoValor) ? null : novoPromoValor;
             }
         }
     });
 
     localStorage.setItem('produtosCadastradosPersonalizados', JSON.stringify(listaProdutosAtual));
 
-    alert("Preços atualizados com sucesso!");
+    alert("Preços e promoções atualizados com sucesso!");
     renderizarLoja();
     alternarPainelAdmin();
 }
@@ -300,8 +336,14 @@ function adicionarAoCarrinho(id) {
     const inputNome = document.getElementById(`nome-${id}`);
     const inputNumero = document.getElementById(`tam-${id}`);
 
+    // Se o produto estiver em promoção, adiciona o valor promocional ao carrinho
+    const precoEfetivo = (p.precoPromocional && p.precoPromocional > 0 && p.precoPromocional < p.preco) 
+        ? p.precoPromocional 
+        : p.preco;
+
     const itemCarrinho = {
         ...p,
+        preco: precoEfetivo, // Salva o preço correto no carrinho
         quantidade: 1,
         nomePersonalizado: inputNome ? inputNome.value : null,
         numeroPersonalizado: inputNumero ? inputNumero.value : null
