@@ -440,10 +440,11 @@ function renderizarCarrinho(carrinho) {
     container.innerHTML = `
         <div class="lista-itens-carrinho">
             ${carrinho.map((item, index) => {
+                const qtd = item.quantidade || 1;
                 const precoNormal = Number(item.preco) || 0;
                 const precoPromo = Number(item.precoPromocional) || 0;
                 const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && item.quantidade >= qtdMinima);
+                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
                 const precoAtual = temPromo ? precoPromo : precoNormal;
 
                 return `
@@ -455,10 +456,10 @@ function renderizarCarrinho(carrinho) {
                     </span>
                     <div>
                         <button class="btn-qtd" onclick="alterarQuantidade(${index}, -1)">-</button>
-                        <span style="margin: 0 10px;">${item.quantidade}x</span>
+                        <span style="margin: 0 10px;">${qtd}x</span>
                         <button class="btn-qtd" onclick="alterarQuantidade(${index}, 1)">+</button>
                     </div>
-                    <span>R$ ${(item.quantidade * precoAtual).toFixed(2)}</span>
+                    <span>R$ ${(qtd * precoAtual).toFixed(2)}</span>
                 </div>
             `;
             }).join('')}
@@ -495,16 +496,17 @@ function finalizarPedidoWhatsApp() {
     const { totalPix, totalCartao } = calcularTotal(carrinho);
     
     let itensFormatados = carrinho.map(item => {
+        const qtd = item.quantidade || 1;
         const precoNormal = Number(item.preco) || 0;
         const precoPromo = Number(item.precoPromocional) || 0;
         const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && item.quantidade >= qtdMinima);
+        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
         const precoAtual = temPromo ? precoPromo : precoNormal;
 
-        let texto = `\n- ${item.titulo} (${item.quantidade}x)`;
+        let texto = `\n- ${item.titulo} (${qtd}x)`;
         if (item.nomePersonalizado) texto += ` | Nome: ${item.nomePersonalizado}`;
         if (item.numeroPersonalizado) texto += ` | Num: ${item.numeroPersonalizado}`;
-        texto += ` | R$ ${(item.quantidade * precoAtual).toFixed(2)}`;
+        texto += ` | R$ ${(qtd * precoAtual).toFixed(2)}`;
         return texto;
     }).join('');
 
