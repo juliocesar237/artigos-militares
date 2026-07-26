@@ -140,16 +140,22 @@ function renderizarLoja() {
             const ehTargeta = tituloLower.includes('targeta') || tituloLower.includes('tarjeta');
             const placeholderTexto = ehTargeta ? 'Ex: CB PM BELTRAME' : 'Nome';
 
-            // Lógica de exibição de preço e promoção
+            // Lógica de exibição de preço e aviso de quantidade mínima tipo mercado
             let htmlPreco = '';
             const precoNum = Number(p.preco) || 0;
             const precoPromoNum = p.precoPromocional ? Number(p.precoPromocional) : null;
+            const qtdMinima = p.quantidadeMinimaPromo ? Number(p.quantidadeMinimaPromo) : 1;
 
             if (precoPromoNum && precoPromoNum > 0 && precoPromoNum < precoNum) {
                 htmlPreco = `
-                    <div class="preco" style="display: flex; gap: 8px; align-items: center; justify-content: center;">
-                        <span style="text-decoration: line-through; color: #999; font-size: 0.85em;">R$ ${precoNum.toFixed(2)}</span>
-                        <span style="color: #e74c3c; font-weight: bold;">R$ ${precoPromoNum.toFixed(2)}</span>
+                    <div class="preco" style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                        <div style="display: flex; gap: 8px; align-items: center; justify-content: center;">
+                            <span style="text-decoration: line-through; color: #999; font-size: 0.85em;">R$ ${precoNum.toFixed(2)}</span>
+                            <span style="color: #e74c3c; font-weight: bold;">R$ ${precoPromoNum.toFixed(2)} (Pix)</span>
+                        </div>
+                        <small style="color: #27ae60; font-weight: bold; font-size: 0.75em;">
+                            ${qtdMinima > 1 ? `Leve a partir de ${qtdMinima} un.` : 'Preço promocional no Pix'}
+                        </small>
                     </div>
                 `;
             } else {
@@ -193,7 +199,8 @@ function renderizarConteudoAdmin() {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                 <input type="text" id="novo-titulo" placeholder="Nome do Produto" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="number" step="0.01" id="novo-preco" placeholder="Preço Normal (R$)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                <input type="number" step="0.01" id="novo-preco-promo" placeholder="Preço Promocional (Opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="number" step="0.01" id="novo-preco-promo" placeholder="Preço Promocional Pix (Opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="number" id="novo-qtd-minima" placeholder="Qtd Mínima para Promo (Ex: 3)" value="1" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-categoria" placeholder="Categoria (ex: Bordados)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-patente" placeholder="Patente (opcional, ex: sd)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <input type="text" id="novo-imagem" placeholder="URL da Imagem (opcional)" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; grid-column: span 2;">
@@ -206,20 +213,22 @@ function renderizarConteudoAdmin() {
         </div>
 
         <h4 style="color: #2c3e50; margin-bottom: 5px;">Gerenciamento de Preços e Promoções</h4>
-        <p style="font-size: 13px; color: #333; margin-bottom: 10px;">Altere o preço normal ou defina/limpe o preço promocional de cada item.</p>
-        <div style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
+        <p style="font-size: 13px; color: #333; margin-bottom: 10px;">Altere o preço normal, preço promocional no Pix e a quantidade mínima exigida.</p>
+        <div style="max-height: 280px; overflow-y: auto; margin-bottom: 15px; background: #fff; border: 1px solid #ccc; border-radius: 4px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: #2c3e50; color: white; text-align: left;">
                         <th style="padding: 10px;">Produto</th>
-                        <th style="padding: 10px; width: 110px;">Preço (R$)</th>
-                        <th style="padding: 10px; width: 110px;">Preço Promo</th>
+                        <th style="padding: 10px; width: 100px;">Preço Normal</th>
+                        <th style="padding: 10px; width: 100px;">Preço Pix Promo</th>
+                        <th style="padding: 10px; width: 90px;">Qtd Mín.</th>
                     </tr>
                 </thead>
                 <tbody>
     `;
 
     listaProdutosAtual.forEach(p => {
+        const qtdMin = p.quantidadeMinimaPromo !== undefined && p.quantidadeMinimaPromo !== null ? p.quantidadeMinimaPromo : 1;
         html += `
             <tr style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 10px; font-size: 14px; color: #2c3e50; font-weight: bold;">${p.titulo}</td>
@@ -227,7 +236,10 @@ function renderizarConteudoAdmin() {
                     <input type="number" step="0.01" id="admin-preco-${p.id}" value="${p.preco}" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #000;">
                 </td>
                 <td style="padding: 10px;">
-                    <input type="number" step="0.01" id="admin-promo-${p.id}" value="${p.precoPromocional !== undefined && p.precoPromocional !== null ? p.precoPromocional : ''}" placeholder="Vazio = Sem promo" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #e74c3c;">
+                    <input type="number" step="0.01" id="admin-promo-${p.id}" value="${p.precoPromocional !== undefined && p.precoPromocional !== null ? p.precoPromocional : ''}" placeholder="Vazio = Sem" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #e74c3c;">
+                </td>
+                <td style="padding: 10px;">
+                    <input type="number" id="admin-qtdmin-${p.id}" value="${qtdMin}" min="1" style="width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #bbb; border-radius: 4px; font-weight: bold; color: #2980b9;">
                 </td>
             </tr>
         `;
@@ -247,6 +259,7 @@ function adicionarNovoProdutoAdmin() {
     const titulo = document.getElementById('novo-titulo').value.trim();
     const preco = parseFloat(document.getElementById('novo-preco').value);
     const precoPromoInput = document.getElementById('novo-preco-promo').value.trim();
+    const qtdMinimaInput = document.getElementById('novo-qtd-minima').value.trim();
     const categoria = document.getElementById('novo-categoria').value.trim();
     const patente = document.getElementById('novo-patente').value.trim();
     const imagem = document.getElementById('novo-imagem').value.trim();
@@ -260,12 +273,14 @@ function adicionarNovoProdutoAdmin() {
 
     const novoId = Date.now();
     const precoPromocional = precoPromoInput !== '' ? parseFloat(precoPromoInput) : null;
+    const quantidadeMinimaPromo = qtdMinimaInput !== '' ? parseInt(qtdMinimaInput) : 1;
 
     const novoProduto = {
         id: novoId,
         titulo: titulo,
         preco: preco,
         precoPromocional: isNaN(precoPromocional) ? null : precoPromocional,
+        quantidadeMinimaPromo: isNaN(quantidadeMinimaPromo) ? 1 : quantidadeMinimaPromo,
         categoria: categoria,
         patente: patente || "",
         imagem: imagem || "",
@@ -285,6 +300,7 @@ function salvarNovosPrecos() {
     listaProdutosAtual.forEach(p => {
         const inputPreco = document.getElementById(`admin-preco-${p.id}`);
         const inputPromo = document.getElementById(`admin-promo-${p.id}`);
+        const inputQtdMin = document.getElementById(`admin-qtdmin-${p.id}`);
 
         if (inputPreco) {
             const novoValor = parseFloat(inputPreco.value);
@@ -296,11 +312,16 @@ function salvarNovosPrecos() {
         if (inputPromo) {
             const valorPromoText = inputPromo.value.trim();
             if (valorPromoText === '') {
-                p.precoPromocional = null; // Remove a promoção se o campo estiver vazio
+                p.precoPromocional = null;
             } else {
                 const novoPromoValor = parseFloat(valorPromoText);
                 p.precoPromocional = isNaN(novoPromoValor) ? null : novoPromoValor;
             }
+        }
+
+        if (inputQtdMin) {
+            const novaQtdMin = parseInt(inputQtdMin.value);
+            p.quantidadeMinimaPromo = isNaN(novaQtdMin) || novaQtdMin < 1 ? 1 : novaQtdMin;
         }
     });
 
@@ -336,14 +357,8 @@ function adicionarAoCarrinho(id) {
     const inputNome = document.getElementById(`nome-${id}`);
     const inputNumero = document.getElementById(`tam-${id}`);
 
-    // Se o produto estiver em promoção, adiciona o valor promocional ao carrinho
-    const precoEfetivo = (p.precoPromocional && p.precoPromocional > 0 && p.precoPromocional < p.preco) 
-        ? p.precoPromocional 
-        : p.preco;
-
     const itemCarrinho = {
         ...p,
-        preco: precoEfetivo, // Salva o preço correto no carrinho
         quantidade: 1,
         nomePersonalizado: inputNome ? inputNome.value : null,
         numeroPersonalizado: inputNumero ? inputNumero.value : null
@@ -362,4 +377,149 @@ function alterarQuantidade(index, delta) {
     if (carrinho[index].quantidade <= 0) carrinho.splice(index, 1);
     
     if (typeof renderizarCarrinho === 'function') renderizarCarrinho(carrinho);
+}
+
+// 1. Função de Cálculo com verificação da quantidade mínima exigida para o Pix
+function calcularTotal(carrinho) {
+    let totalPix = 0, totalCartao = 0;
+    let qtdBordados = 0, qtdTargetas = 0;
+
+    carrinho.forEach(item => {
+        const qtd = item.quantidade || 1;
+        const categoria = (item.categoria || '').trim().toLowerCase();
+        const titulo = (item.titulo || '').trim().toLowerCase();
+
+        const precoNormal = Number(item.preco) || 0;
+        const precoPromo = (item.precoPromocional !== undefined && item.precoPromocional !== null && item.precoPromocional !== '') 
+            ? Number(item.precoPromocional) 
+            : null;
+        
+        const qtdMinima = item.quantidadeMinimaPromo ? Number(item.quantidadeMinimaPromo) : 1;
+
+        // O Pix só usa o valor promocional se a quantidade atingir ou passar da quantidade mínima configurada
+        const temDireitoPromo = (precoPromo && precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
+        const valorUnitarioPix = temDireitoPromo ? precoPromo : precoNormal;
+        const valorUnitarioCartao = precoNormal;
+
+        if (categoria === 'bordados' || categoria === 'emborrachados') {
+            if (titulo.includes('targeta') || titulo.includes('tarjeta')) {
+                qtdTargetas += qtd;
+            } else {
+                qtdBordados += qtd;
+            }
+        } else {
+            totalCartao += (qtd * valorUnitarioCartao);
+            
+            if (titulo.includes('agasalho')) {
+                totalPix += (qtd * 100);
+            } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
+                totalPix += (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
+            } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
+                totalPix += (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
+            } else {
+                totalPix += (qtd * valorUnitarioPix);
+            }
+        }
+    });
+
+    totalPix += (Math.floor(qtdTargetas / 3) * 20) + ((qtdTargetas % 3) * 8);
+    totalPix += (Math.floor(qtdBordados / 3) * 12) + ((qtdBordados % 3) * 8);
+    totalCartao += ((qtdTargetas + qtdBordados) * 8);
+    
+    return { totalPix, totalCartao };
+}
+
+// 2. Função de Renderização do Carrinho com o campo de Batalhão
+function renderizarCarrinho(carrinho) {
+    const container = document.getElementById('conteudo-carrinho');
+    if (!container) return;
+    
+    const { totalPix, totalCartao } = calcularTotal(carrinho);
+
+    if (carrinho.length === 0) {
+        container.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="lista-itens-carrinho">
+            ${carrinho.map((item, index) => {
+                const precoNormal = Number(item.preco) || 0;
+                const precoPromo = Number(item.precoPromocional) || 0;
+                const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
+                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && item.quantidade >= qtdMinima);
+                const precoAtual = temPromo ? precoPromo : precoNormal;
+
+                return `
+                <div class="item-carrinho">
+                    <span>
+                        ${item.titulo}
+                        ${item.nomePersonalizado ? `<br><small>Nome: ${item.nomePersonalizado}</small>` : ''}
+                        ${item.numeroPersonalizado ? `<br><small>Num: ${item.numeroPersonalizado}</small>` : ''}
+                    </span>
+                    <div>
+                        <button class="btn-qtd" onclick="alterarQuantidade(${index}, -1)">-</button>
+                        <span style="margin: 0 10px;">${item.quantidade}x</span>
+                        <button class="btn-qtd" onclick="alterarQuantidade(${index}, 1)">+</button>
+                    </div>
+                    <span>R$ ${(item.quantidade * precoAtual).toFixed(2)}</span>
+                </div>
+            `;
+            }).join('')}
+        </div>
+
+        <div class="bloco-batalhao" style="margin: 15px 0; text-align: left;">
+            <label for="input-batalhao" style="display: block; margin-bottom: 5px; font-weight: bold;">Informe seu Batalhão (OM / Unidade):</label>
+            <input type="text" id="input-batalhao" class="input-batalhao" placeholder="Ex: 11º BPM/I, C-Choque, etc." style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+
+        <div id="painel-total">
+            <p>Total PIX: <span class="valor-destaque">R$ ${totalPix.toFixed(2)}</span></p>
+            <p>Total Cartão: <span class="valor-destaque">R$ ${totalCartao.toFixed(2)}</span></p>
+            <button id="btn-finalizar" onclick="finalizarPedidoWhatsApp()">FINALIZAR PEDIDO VIA WHATSAPP</button>
+        </div>
+    `;
+}
+
+// 3. Função de Finalizar Pedido via WhatsApp
+function finalizarPedidoWhatsApp() {
+    if (carrinho.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+    }
+
+    const inputBatalhao = document.getElementById('input-batalhao');
+    const batalhaoCliente = inputBatalhao ? inputBatalhao.value.trim() : "";
+
+    if (!batalhaoCliente) {
+        alert("Por favor, informe o seu Batalhão antes de finalizar o pedido.");
+        if (inputBatalhao) inputBatalhao.focus();
+        return;
+    }
+
+    const { totalPix, totalCartao } = calcularTotal(carrinho);
+    
+    let itensFormatados = carrinho.map(item => {
+        const precoNormal = Number(item.preco) || 0;
+        const precoPromo = Number(item.precoPromocional) || 0;
+        const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
+        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && item.quantidade >= qtdMinima);
+        const precoAtual = temPromo ? precoPromo : precoNormal;
+
+        let texto = `\n- ${item.titulo} (${item.quantidade}x)`;
+        if (item.nomePersonalizado) texto += ` | Nome: ${item.nomePersonalizado}`;
+        if (item.numeroPersonalizado) texto += ` | Num: ${item.numeroPersonalizado}`;
+        texto += ` | R$ ${(item.quantidade * precoAtual).toFixed(2)}`;
+        return texto;
+    }).join('');
+
+    const mensagem = `Olá! Gostaria de realizar o seguinte pedido:` +
+                     `\n\n*Batalhão / Unidade:* ${batalhaoCliente}` +
+                     `\n*Itens do Pedido:*${itensFormatados}` +
+                     `\n\n*Total PIX (com desconto aplicado):* R$ ${totalPix.toFixed(2)}` +
+                     `\n*Total Cartão:* R$ ${totalCartao.toFixed(2)}` +
+                     `\n\nPor favor, informe os dados para pagamento.`;
+
+    const numeroWhatsApp = "5511971113924"; 
+    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`, '_blank');
 }
