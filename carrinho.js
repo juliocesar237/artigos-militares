@@ -137,7 +137,7 @@ function renderizarLoja() {
                 }
             }
 
-            const ehTargeta = tituloLower.includes('targeta') || tituloLower.includes('tarjeta');
+            const ehTargeta = (tituloLower.includes('targeta') || tituloLower.includes('tarjeta')) && !tituloLower.includes('curso');
             const placeholderTexto = ehTargeta ? 'Ex: CB PM BELTRAME' : 'Nome';
 
             let htmlPreco = '';
@@ -399,7 +399,7 @@ function calcularTotal(carrinho) {
         const valorUnitarioCartao = precoNormal;
 
         if (categoria === 'bordados' || categoria === 'emborrachados') {
-            if (titulo.includes('targeta') || titulo.includes('tarjeta')) {
+            if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
                 qtdTargetas += qtd;
             } else {
                 qtdBordados += qtd;
