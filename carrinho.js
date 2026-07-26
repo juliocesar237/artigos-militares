@@ -287,7 +287,9 @@ function adicionarNovoProdutoAdmin() {
         tamanho: tamanho
     };
 
-    listaProdutosAtual.push(novoProduto);
+    listaProdutosAtual.push(novoId); // Correção de sintaxe lógica se necessário, mantido .push(novoProduto)
+    listaProdutosAtual[listaProdutosAtual.length - 1] = novoProduto; // Garantindo inserção correta do objeto
+
     localStorage.setItem('produtosCadastradosPersonalizados', JSON.stringify(listaProdutosAtual));
 
     alert("Produto cadastrado com sucesso!");
@@ -328,7 +330,7 @@ function salvarNovosPrecos() {
 
     alert("Preços e promoções atualizados com sucesso!");
     renderizarLoja();
-    alternarPainelAdmin();
+    renderizarConteudoAdmin(); // Mantém o painel aberto e atualizado para o admin continuar editando se quiser
 }
 
 function fazerLogout() {
@@ -356,6 +358,13 @@ function adicionarAoCarrinho(id) {
     const inputNome = document.getElementById(`nome-${id}`);
     const inputNumero = document.getElementById(`tam-${id}`);
 
+    // Validação opcional: se o produto exige tamanho e nada foi selecionado (ou se está na opção vazia)
+    if (p.tamanho && inputNumero && !inputNumero.value) {
+        alert("Por favor, selecione o tamanho do produto antes de adicionar ao carrinho.");
+        inputNumero.focus();
+        return;
+    }
+
     const itemCarrinho = {
         ...p,
         quantidade: 1,
@@ -368,7 +377,7 @@ function adicionarAoCarrinho(id) {
     if (typeof renderizarCarrinho === 'function') renderizarCarrinho(carrinho);
     
     if (inputNome) inputNome.value = '';
-    if (inputNumero) inputNumero.value = '';
+    // Removido o reset abrupto do select de tamanho para evitar falhas visuais, mantendo o fluxo natural do usuário.
 }
 
 function alterarQuantidade(index, delta) {
@@ -430,7 +439,7 @@ function renderizarCarrinho(carrinho) {
                     <span>
                         ${item.titulo}
                         ${item.nomePersonalizado ? `<br><small>Nome: ${item.nomePersonalizado}</small>` : ''}
-                        ${item.numeroPersonalizado ? `<br><small>Num: ${item.numeroPersonalizado}</small>` : ''}
+                        ${item.numeroPersonalizado ? `<br><small>Tamanho: ${item.numeroPersonalizado}</small>` : ''}
                     </span>
                     <div>
                         <button class="btn-qtd" onclick="alterarQuantidade(${index}, -1)">-</button>
@@ -486,7 +495,7 @@ function finalizarPedidoWhatsApp() {
 
         let texto = `\n- ${item.titulo} (${qtd}x)`;
         if (item.nomePersonalizado) texto += ` | Nome: ${item.nomePersonalizado}`;
-        if (item.numeroPersonalizado) texto += ` | Num: ${item.numeroPersonalizado}`;
+        if (item.numeroPersonalizado) texto += ` | Tamanho: ${item.numeroPersonalizado}`;
         texto += ` | R$ ${subtotalItemPix.toFixed(2)}`;
         return texto;
     }).join('');
