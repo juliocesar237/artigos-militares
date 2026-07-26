@@ -441,11 +441,32 @@ function renderizarCarrinho(carrinho) {
         <div class="lista-itens-carrinho">
             ${carrinho.map((item, index) => {
                 const qtd = item.quantidade || 1;
+                const categoria = (item.categoria || '').trim().toLowerCase();
+                const titulo = (item.titulo || '').trim().toLowerCase();
                 const precoNormal = Number(item.preco) || 0;
-                const precoPromo = Number(item.precoPromocional) || 0;
-                const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
-                const precoAtual = temPromo ? precoPromo : precoNormal;
+
+                let subtotalItemPix = 0;
+                
+                if (categoria === 'bordados' || categoria === 'emborrachados') {
+                    if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
+                        subtotalItemPix = (Math.floor(qtd / 3) * 20) + ((qtd % 3) * 8);
+                    } else {
+                        subtotalItemPix = (Math.floor(qtd / 3) * 12) + ((qtd % 3) * 8);
+                    }
+                } else {
+                    if (titulo.includes('agasalho')) {
+                        subtotalItemPix = (qtd * 100);
+                    } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
+                        subtotalItemPix = (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
+                    } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
+                        subtotalItemPix = (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
+                    } else {
+                        const precoPromo = Number(item.precoPromocional) || 0;
+                        const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
+                        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
+                        subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
+                    }
+                }
 
                 return `
                 <div class="item-carrinho">
@@ -459,7 +480,7 @@ function renderizarCarrinho(carrinho) {
                         <span style="margin: 0 10px;">${qtd}x</span>
                         <button class="btn-qtd" onclick="alterarQuantidade(${index}, 1)">+</button>
                     </div>
-                    <span>R$ ${(qtd * precoAtual).toFixed(2)}</span>
+                    <span>R$ ${subtotalItemPix.toFixed(2)}</span>
                 </div>
             `;
             }).join('')}
@@ -497,16 +518,37 @@ function finalizarPedidoWhatsApp() {
     
     let itensFormatados = carrinho.map(item => {
         const qtd = item.quantidade || 1;
+        const categoria = (item.categoria || '').trim().toLowerCase();
+        const titulo = (item.titulo || '').trim().toLowerCase();
         const precoNormal = Number(item.preco) || 0;
-        const precoPromo = Number(item.precoPromocional) || 0;
-        const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
-        const precoAtual = temPromo ? precoPromo : precoNormal;
+
+        let subtotalItemPix = 0;
+        
+        if (categoria === 'bordados' || categoria === 'emborrachados') {
+            if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
+                subtotalItemPix = (Math.floor(qtd / 3) * 20) + ((qtd % 3) * 8);
+            } else {
+                subtotalItemPix = (Math.floor(qtd / 3) * 12) + ((qtd % 3) * 8);
+            }
+        } else {
+            if (titulo.includes('agasalho')) {
+                subtotalItemPix = (qtd * 100);
+            } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
+                subtotalItemPix = (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
+            } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
+                subtotalItemPix = (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
+            } else {
+                const precoPromo = Number(item.precoPromocional) || 0;
+                const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
+                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
+                subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
+            }
+        }
 
         let texto = `\n- ${item.titulo} (${qtd}x)`;
         if (item.nomePersonalizado) texto += ` | Nome: ${item.nomePersonalizado}`;
         if (item.numeroPersonalizado) texto += ` | Num: ${item.numeroPersonalizado}`;
-        texto += ` | R$ ${(qtd * precoAtual).toFixed(2)}`;
+        texto += ` | R$ ${subtotalItemPix.toFixed(2)}`;
         return texto;
     }).join('');
 
