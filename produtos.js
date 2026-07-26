@@ -1,8 +1,8 @@
 const produtos = [
     // --- BORDADOS ---
-    { id: 1, categoria: "Bordados", patente: "sd", titulo: "Curso de SD", preco: 5.0, imagem: "" },
-    { id: 2, categoria: "Bordados", patente: "sgt", titulo: "Curso de SGT", preco: 5.0, imagem: "" },
-    { id: 3, categoria: "Bordados", patente: "geral", titulo: "Curso CAIS", preco: 5.0, imagem: "" },
+    { id: 1, categoria: "Bordados", patente: "sd", titulo: "Curso de SD", preco: 8.0, imagem: "" },
+    { id: 2, categoria: "Bordados", patente: "sgt", titulo: "Curso de SGT", preco: 8.0, imagem: "" },
+    { id: 3, categoria: "Bordados", patente: "geral", titulo: "Curso CAIS", preco: 8.0, imagem: "" },
     { id: 4, categoria: "Bordados", patente: "geral", titulo: "Bandeira Paulista Bordada", preco: 10.0, imagem: "" },
     { id: 5, categoria: "Bordados", patente: "geral", titulo: "Targeta operacional", preco: 8.0, personalizavel: true, imagem: "" },
     { id: 6, categoria: "Bordados", patente: "geral", titulo: "Targeta ed fisica", preco: 8.0, personalizavel: true, imagem: "" },

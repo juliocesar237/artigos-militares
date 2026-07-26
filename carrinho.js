@@ -1,20 +1,26 @@
-// 1. Função de Cálculo
 function calcularTotal(carrinho) {
     let totalPix = 0, totalCartao = 0;
     let qtdBordados = 0, qtdTargetas = 0;
 
     carrinho.forEach(item => {
         const qtd = item.quantidade || 1;
-        if (item.categoria === 'Bordados') {
-            if (item.titulo.includes('Targeta')) qtdTargetas += qtd;
-            else qtdBordados += qtd;
+        const categoria = (item.categoria || '').trim().toLowerCase();
+        const titulo = (item.titulo || '').trim().toLowerCase();
+
+        if (categoria === 'bordados' || categoria === 'emborrachados') {
+            if (titulo.includes('targeta') || titulo.includes('tarjeta')) {
+                qtdTargetas += qtd;
+            } else {
+                qtdBordados += qtd;
+            }
         } else {
             totalCartao += (qtd * item.preco);
-            if (item.titulo === 'Agasalho') {
+            
+            if (titulo.includes('agasalho')) {
                 totalPix += (qtd * 100);
-            } else if (item.titulo.includes('Camiseta ed fisica') || item.titulo.includes('Shorts')) {
+            } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
                 totalPix += (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
-            } else if (item.titulo === 'Camisetas cinzas') {
+            } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
                 totalPix += (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
             } else {
                 totalPix += (qtd * item.preco);
@@ -27,7 +33,6 @@ function calcularTotal(carrinho) {
     totalCartao += ((qtdTargetas + qtdBordados) * 8);
     return { totalPix, totalCartao };
 }
-
 // 2. Função de Renderização (Atualizada com o campo de Batalhão)
 function renderizarCarrinho(carrinho) {
     const container = document.getElementById('conteudo-carrinho');
