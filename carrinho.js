@@ -380,13 +380,9 @@ function alterarQuantidade(index, delta) {
 
 function calcularTotal(carrinho) {
     let totalPix = 0, totalCartao = 0;
-    let qtdBordados = 0, qtdTargetas = 0;
 
     carrinho.forEach(item => {
         const qtd = item.quantidade || 1;
-        const categoria = (item.categoria || '').trim().toLowerCase();
-        const titulo = (item.titulo || '').trim().toLowerCase();
-
         const precoNormal = Number(item.preco) || 0;
         const precoPromo = (item.precoPromocional !== undefined && item.precoPromocional !== null && item.precoPromocional !== '') 
             ? Number(item.precoPromocional) 
@@ -398,31 +394,10 @@ function calcularTotal(carrinho) {
         const valorUnitarioPix = temDireitoPromo ? precoPromo : precoNormal;
         const valorUnitarioCartao = precoNormal;
 
-        if (categoria === 'bordados' || categoria === 'emborrachados') {
-            if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
-                qtdTargetas += qtd;
-            } else {
-                qtdBordados += qtd;
-            }
-        } else {
-            totalCartao += (qtd * valorUnitarioCartao);
-            
-            if (titulo.includes('agasalho')) {
-                totalPix += (qtd * 100);
-            } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
-                totalPix += (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
-            } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
-                totalPix += (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
-            } else {
-                totalPix += (qtd * valorUnitarioPix);
-            }
-        }
+        totalPix += (qtd * valorUnitarioPix);
+        totalCartao += (qtd * valorUnitarioCartao);
     });
 
-    totalPix += (Math.floor(qtdTargetas / 3) * 20) + ((qtdTargetas % 3) * 8);
-    totalPix += (Math.floor(qtdBordados / 3) * 12) + ((qtdBordados % 3) * 8);
-    totalCartao += ((qtdTargetas + qtdBordados) * 8);
-    
     return { totalPix, totalCartao };
 }
 
@@ -441,32 +416,14 @@ function renderizarCarrinho(carrinho) {
         <div class="lista-itens-carrinho">
             ${carrinho.map((item, index) => {
                 const qtd = item.quantidade || 1;
-                const categoria = (item.categoria || '').trim().toLowerCase();
-                const titulo = (item.titulo || '').trim().toLowerCase();
                 const precoNormal = Number(item.preco) || 0;
+                const precoPromo = (item.precoPromocional !== undefined && item.precoPromocional !== null && item.precoPromocional !== '') 
+                    ? Number(item.precoPromocional) 
+                    : null;
+                const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
 
-                let subtotalItemPix = 0;
-                
-                if (categoria === 'bordados' || categoria === 'emborrachados') {
-                    if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
-                        subtotalItemPix = (Math.floor(qtd / 3) * 20) + ((qtd % 3) * 8);
-                    } else {
-                        subtotalItemPix = (Math.floor(qtd / 3) * 12) + ((qtd % 3) * 8);
-                    }
-                } else {
-                    if (titulo.includes('agasalho')) {
-                        subtotalItemPix = (qtd * 100);
-                    } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
-                        subtotalItemPix = (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
-                    } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
-                        subtotalItemPix = (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
-                    } else {
-                        const precoPromo = Number(item.precoPromocional) || 0;
-                        const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-                        const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
-                        subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
-                    }
-                }
+                const temPromo = (precoPromo && precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
+                const subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
 
                 return `
                 <div class="item-carrinho">
@@ -518,32 +475,14 @@ function finalizarPedidoWhatsApp() {
     
     let itensFormatados = carrinho.map(item => {
         const qtd = item.quantidade || 1;
-        const categoria = (item.categoria || '').trim().toLowerCase();
-        const titulo = (item.titulo || '').trim().toLowerCase();
         const precoNormal = Number(item.preco) || 0;
+        const precoPromo = (item.precoPromocional !== undefined && item.precoPromocional !== null && item.precoPromocional !== '') 
+            ? Number(item.precoPromocional) 
+            : null;
+        const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
 
-        let subtotalItemPix = 0;
-        
-        if (categoria === 'bordados' || categoria === 'emborrachados') {
-            if ((titulo.includes('targeta') || titulo.includes('tarjeta')) && !titulo.includes('curso')) {
-                subtotalItemPix = (Math.floor(qtd / 3) * 20) + ((qtd % 3) * 8);
-            } else {
-                subtotalItemPix = (Math.floor(qtd / 3) * 12) + ((qtd % 3) * 8);
-            }
-        } else {
-            if (titulo.includes('agasalho')) {
-                subtotalItemPix = (qtd * 100);
-            } else if (titulo.includes('camiseta ed') || titulo.includes('ed fisica') || titulo.includes('shorts')) {
-                subtotalItemPix = (qtd >= 4) ? (Math.floor(qtd / 4) * 100) + ((qtd % 4) * 28) : (qtd == 3) ? 85 : (qtd == 2) ? 55 : qtd * 32;
-            } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
-                subtotalItemPix = (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
-            } else {
-                const precoPromo = Number(item.precoPromocional) || 0;
-                const qtdMinima = Number(item.quantidadeMinimaPromo) || 1;
-                const temPromo = (precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
-                subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
-            }
-        }
+        const temPromo = (precoPromo && precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
+        const subtotalItemPix = qtd * (temPromo ? precoPromo : precoNormal);
 
         let texto = `\n- ${item.titulo} (${qtd}x)`;
         if (item.nomePersonalizado) texto += ` | Nome: ${item.nomePersonalizado}`;
