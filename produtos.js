@@ -47,7 +47,7 @@ const produtos = [
     { id: 39, categoria: "Acessórios", patente: "geral", titulo: "Porta carregador de fuzil", preco: 75.0, imagem: "" },
     { id: 40, categoria: "Acessórios", patente: "geral", titulo: "Capa modular", preco: 520.0, imagem: "" },
     { id: 41, categoria: "Acessórios", patente: "geral", titulo: "Adaptador de perna para o coldre da PM", preco: 55.0, imagem: "" },
-    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, tamanho: true, imagem: "" },
+    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, imagem: "" }, // <--- Alterado aqui (removido o tamanho: true)
     { id: 43, categoria: "Acessórios", patente: "geral", titulo: "Lanterna USB", preco: 35.0, imagem: "" },
     { id: 44, categoria: "Acessórios", patente: "geral", titulo: "Abafador auricular", preco: 30.0, imagem: "" },
     { id: 45, categoria: "Acessórios", patente: "geral", titulo: "Alicate multiuso", preco: 45.0, imagem: "" },
