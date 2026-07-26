@@ -1,3 +1,4 @@
+// 1. Função de Cálculo Corrigida (Respeita Preço Promocional no PIX e Normal no Cartão)
 function calcularTotal(carrinho) {
     let totalPix = 0, totalCartao = 0;
     let qtdBordados = 0, qtdTargetas = 0;
@@ -7,6 +8,14 @@ function calcularTotal(carrinho) {
         const categoria = (item.categoria || '').trim().toLowerCase();
         const titulo = (item.titulo || '').trim().toLowerCase();
 
+        const precoNormal = Number(item.preco) || 0;
+        const precoPromo = (item.precoPromocional !== undefined && item.precoPromocional !== null && item.precoPromocional !== '') 
+            ? Number(item.precoPromocional) 
+            : null;
+
+        const valorUnitarioPix = (precoPromo && precoPromo > 0 && precoPromo < precoNormal) ? precoPromo : precoNormal;
+        const valorUnitarioCartao = precoNormal;
+
         if (categoria === 'bordados' || categoria === 'emborrachados') {
             if (titulo.includes('targeta') || titulo.includes('tarjeta')) {
                 qtdTargetas += qtd;
@@ -14,7 +23,7 @@ function calcularTotal(carrinho) {
                 qtdBordados += qtd;
             }
         } else {
-            totalCartao += (qtd * item.preco);
+            totalCartao += (qtd * valorUnitarioCartao);
             
             if (titulo.includes('agasalho')) {
                 totalPix += (qtd * 100);
@@ -23,7 +32,7 @@ function calcularTotal(carrinho) {
             } else if (titulo.includes('camiseta') && titulo.includes('cinza')) {
                 totalPix += (qtd >= 3) ? (Math.floor(qtd / 3) * 90) + ((qtd % 3) * 32) : (qtd == 2) ? 65 : qtd * 35;
             } else {
-                totalPix += (qtd * item.preco);
+                totalPix += (qtd * valorUnitarioPix);
             }
         }
     });
@@ -31,8 +40,10 @@ function calcularTotal(carrinho) {
     totalPix += (Math.floor(qtdTargetas / 3) * 20) + ((qtdTargetas % 3) * 8);
     totalPix += (Math.floor(qtdBordados / 3) * 12) + ((qtdBordados % 3) * 8);
     totalCartao += ((qtdTargetas + qtdBordados) * 8);
+    
     return { totalPix, totalCartao };
 }
+
 // 2. Função de Renderização (Atualizada com o campo de Batalhão)
 function renderizarCarrinho(carrinho) {
     const container = document.getElementById('conteudo-carrinho');
