@@ -33,21 +33,21 @@ const produtos = [
     { id: 29, categoria: "Emborrachados", patente: "geral", titulo: "Divisa para Gandola (Emborrachada) - Bomboneiro", preco: 5.0, imagem: "" },
 
     // --- UNIFORMES ---
-    { id: 30, categoria: "Uniformes", titulo: "Agasalho", preco: 120.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
-    { id: 31, categoria: "Uniformes", titulo: "Camisetas Ed física", preco: 32.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
-    { id: 32, categoria: "Uniformes", titulo: "Camisetas cinzas", preco: 40.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
-    { id: 33, categoria: "Uniformes", titulo: "Shorts Ed física", preco: 30.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
-    { id: 34, categoria: "Uniformes", titulo: "Shorts térmico", preco: 30.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
-    { id: 35, categoria: "Uniformes", titulo: "Sunga box", preco: 40.0, tamanho: true, opcoesTamanho: ["P", "M", "G", "GG"], patente: "geral", imagem: "" },
+    { id: 30, categoria: "Uniformes", patente: "geral", titulo: "Agasalho", preco: 120.0, tamanho: true, imagem: "" },
+    { id: 31, categoria: "Uniformes", patente: "geral", titulo: "Camisetas Ed física", preco: 32.0, tamanho: true, imagem: "" },
+    { id: 32, categoria: "Uniformes", patente: "geral", titulo: "Camisetas cinzas", preco: 40.0, tamanho: true, imagem: "" },
+    { id: 33, categoria: "Uniformes", patente: "geral", titulo: "Shorts Ed física", preco: 30.0, tamanho: true, imagem: "" },
+    { id: 34, categoria: "Uniformes", patente: "geral", titulo: "Shorts térmico", preco: 30.0, tamanho: true, imagem: "" },
+    { id: 35, categoria: "Uniformes", patente: "geral", titulo: "Sunga box", preco: 40.0, tamanho: true, imagem: "" },
 
-    // --- ACESSÓRIOS (Itens que realmente são acessórios de verdade) ---
+    // --- ACESSÓRIOS ---
     { id: 36, categoria: "Acessórios", patente: "geral", titulo: "Faixa refletiva", preco: 25.0, imagem: "" },
     { id: 37, categoria: "Acessórios", patente: "geral", titulo: "Coldre da DM", preco: 100.0, imagem: "" },
     { id: 38, categoria: "Acessórios", patente: "geral", titulo: "Carregador da Bélica de polímero", preco: 120.0, imagem: "" },
     { id: 39, categoria: "Acessórios", patente: "geral", titulo: "Porta carregador de fuzil", preco: 75.0, imagem: "" },
     { id: 40, categoria: "Acessórios", patente: "geral", titulo: "Capa modular", preco: 520.0, imagem: "" },
     { id: 41, categoria: "Acessórios", patente: "geral", titulo: "Adaptador de perna para o coldre da PM", preco: 55.0, imagem: "" },
-    { id: 42, categoria: "Acessórios", titulo: "Bandoleira", preco: 50.0, tamanho: true, opcoesTamanho: ["1 Ponta", "2 Pontas", "3 Pontas"], patente: "geral", imagem: "" },
+    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, tamanho: true, imagem: "" },
     { id: 43, categoria: "Acessórios", patente: "geral", titulo: "Lanterna USB", preco: 35.0, imagem: "" },
     { id: 44, categoria: "Acessórios", patente: "geral", titulo: "Abafador auricular", preco: 30.0, imagem: "" },
     { id: 45, categoria: "Acessórios", patente: "geral", titulo: "Alicate multiuso", preco: 45.0, imagem: "" },
