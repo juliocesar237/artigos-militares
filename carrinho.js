@@ -28,7 +28,27 @@ function inicializarSistema(usuario) {
     const produtosSalvos = JSON.parse(localStorage.getItem('produtosCadastradosPersonalizados'));
     
     if (produtosSalvos && typeof produtos !== 'undefined') {
-        listaProdutosAtual = produtosSalvos;
+        // Mesclagem inteligente: prioriza os produtos novos do código-fonte (garantindo promoções),
+        // mas mantém alterações de preços ou produtos customizados salvos no painel admin.
+        listaProdutosAtual = produtos.map(prodOriginal => {
+            const prodSalvo = produtosSalvos.find(p => p.id === prodOriginal.id);
+            if (prodSalvo) {
+                return {
+                    ...prodOriginal,
+                    ...prodSalvo,
+                    precoPromocional: prodSalvo.precoPromocional !== undefined && prodSalvo.precoPromocional !== null ? prodSalvo.precoPromocional : prodOriginal.precoPromocional,
+                    quantidadeMinimaPromo: prodSalvo.quantidadeMinimaPromo !== undefined && prodSalvo.quantidadeMinimaPromo !== null ? prodSalvo.quantidadeMinimaPromo : prodOriginal.quantidadeMinimaPromo
+                };
+            }
+            return prodOriginal;
+        });
+
+        // Garante que produtos criados manualmente pelo painel admin não sumam
+        produtosSalvos.forEach(prodSalvo => {
+            if (!listaProdutosAtual.some(p => p.id === prodSalvo.id)) {
+                listaProdutosAtual.push(prodSalvo);
+            }
+        });
     } else {
         listaProdutosAtual = typeof produtos !== 'undefined' ? [...produtos] : [];
     }
@@ -287,8 +307,7 @@ function adicionarNovoProdutoAdmin() {
         tamanho: tamanho
     };
 
-    listaProdutosAtual.push(novoId); // Correção de sintaxe lógica se necessário, mantido .push(novoProduto)
-    listaProdutosAtual[listaProdutosAtual.length - 1] = novoProduto; // Garantindo inserção correta do objeto
+    listaProdutosAtual.push(novoProduto);
 
     localStorage.setItem('produtosCadastradosPersonalizados', JSON.stringify(listaProdutosAtual));
 
@@ -330,7 +349,7 @@ function salvarNovosPrecos() {
 
     alert("Preços e promoções atualizados com sucesso!");
     renderizarLoja();
-    renderizarConteudoAdmin(); // Mantém o painel aberto e atualizado para o admin continuar editando se quiser
+    renderizarConteudoAdmin();
 }
 
 function fazerLogout() {
@@ -358,7 +377,6 @@ function adicionarAoCarrinho(id) {
     const inputNome = document.getElementById(`nome-${id}`);
     const inputNumero = document.getElementById(`tam-${id}`);
 
-    // Validação opcional: se o produto exige tamanho e nada foi selecionado (ou se está na opção vazia)
     if (p.tamanho && inputNumero && !inputNumero.value) {
         alert("Por favor, selecione o tamanho do produto antes de adicionar ao carrinho.");
         inputNumero.focus();
@@ -377,7 +395,6 @@ function adicionarAoCarrinho(id) {
     if (typeof renderizarCarrinho === 'function') renderizarCarrinho(carrinho);
     
     if (inputNome) inputNome.value = '';
-    // Removido o reset abrupto do select de tamanho para evitar falhas visuais, mantendo o fluxo natural do usuário.
 }
 
 function alterarQuantidade(index, delta) {

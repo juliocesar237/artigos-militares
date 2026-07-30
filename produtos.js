@@ -1,7 +1,7 @@
 const produtos = [
     // --- BORDADOS ---
-    { id: 1, categoria: "Bordados", patente: "sd", titulo: "Curso de SD", preco: 8.0, imagem: "" },
-    { id: 2, categoria: "Bordados", patente: "sgt", titulo: "Curso de SGT", preco: 8.0, imagem: "" },
+    { id: 1, categoria: "Bordados", patente: "sd", titulo: "Curso de SD", preco: 8.0, precoPromocional: 5.0, quantidadeMinimaPromo: 3, imagem: "" },
+    { id: 2, categoria: "Bordados", patente: "sgt", titulo: "Curso de SGT", preco: 8.0, precoPromocional: 5.0, quantidadeMinimaPromo: 3, imagem: "" },
     { id: 3, categoria: "Bordados", patente: "geral", titulo: "Curso CAIS", preco: 8.0, imagem: "" },
     { id: 4, categoria: "Bordados", patente: "geral", titulo: "Bandeira Paulista Bordada", preco: 10.0, imagem: "" },
     { id: 5, categoria: "Bordados", patente: "geral", titulo: "Targeta operacional", preco: 8.0, personalizavel: true, imagem: "" },
@@ -47,7 +47,7 @@ const produtos = [
     { id: 39, categoria: "Acessórios", patente: "geral", titulo: "Porta carregador de fuzil", preco: 75.0, imagem: "" },
     { id: 40, categoria: "Acessórios", patente: "geral", titulo: "Capa modular", preco: 520.0, imagem: "" },
     { id: 41, categoria: "Acessórios", patente: "geral", titulo: "Adaptador de perna para o coldre da PM", preco: 55.0, imagem: "" },
-    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, imagem: "" }, // <--- Alterado aqui (removido o tamanho: true)
+    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, imagem: "" },
     { id: 43, categoria: "Acessórios", patente: "geral", titulo: "Lanterna USB", preco: 35.0, imagem: "" },
     { id: 44, categoria: "Acessórios", patente: "geral", titulo: "Abafador auricular", preco: 30.0, imagem: "" },
     { id: 45, categoria: "Acessórios", patente: "geral", titulo: "Alicate multiuso", preco: 45.0, imagem: "" },
