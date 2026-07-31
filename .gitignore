@@ -46,3 +46,8 @@ database/*.db
 database/*.sqlite
 database/*.sqlite3
 npm-debug.log*
+database/*.db
+database/*.db-shm
+database/*.db-wal
+database/*.sqlite
+database/*.sqlite3
