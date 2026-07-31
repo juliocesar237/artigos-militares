@@ -35,3 +35,14 @@ out/
 
 ### VS Code ###
 .vscode/
+# ==========================
+# NODE.JS
+# ==========================
+
+node_modules/
+.env
+.env.*
+database/*.db
+database/*.sqlite
+database/*.sqlite3
+npm-debug.log*

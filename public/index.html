@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Artigos Militares | Qualidade para quem protege</title>
+
+    <!-- SEO -->
+    <meta
+        name="description"
+        content="Fabricamos e vendemos artigos militares de alta qualidade. Bordados, uniformes, equipamentos e acessórios táticos."
+    >
+
+    <meta
+        name="keywords"
+        content="artigos militares, uniformes militares, bordados, emborrachados, acessórios táticos, PMESP"
+    >
+
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#101417">
+
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="Artigos Militares | Qualidade para quem protege"
+    >
+
+    <meta
+        property="og:description"
+        content="Fabricação própria de uniformes, bordados e equipamentos táticos padrão operacional."
+    >
+
+    <meta property="og:type" content="website">
+
+    <meta
+        property="og:url"
+        content="https://artigos-militares-pm.onrender.com"
+    >
+
+    <meta
+        property="og:image"
+        content="https://artigos-militares-pm.onrender.com/assets/banner-militar.webp"
+    >
+
+    <!-- Favicon -->
+    <link
+        rel="icon"
+        type="image/webp"
+        href="./assets/banner-militar.webp"
+    >
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="site-header">
+
+        <div class="header-top-bar">
+            <div class="header-top-container">
+
+                <span class="info-contato">
+                    📞
+                    <a
+                        href="https://wa.me/5511971113924"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="link-whatsapp-topo"
+                    >
+                        (11) 97111-3924
+                    </a>
+                </span>
+
+                <span class="info-contato">
+                    💬 WhatsApp disponível
+                </span>
+
+                <span class="info-status">
+                    🛡️ Atendimento especializado PMESP
+                </span>
+
+            </div>
+        </div>
+
+        <div class="header-container">
+
+            <div class="logo-area">
+
+                <div
+                    class="logo-svg-container"
+                    aria-hidden="true"
+                >
+                    <svg
+                        width="34"
+                        height="34"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                </div>
+
+                <div class="logo-text">
+                    <h1>Artigos Militares</h1>
+                    <span class="slogan">
+                        Qualidade para quem protege.
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- BUSCA -->
+            <div class="search-bar-container">
+
+                <span
+                    class="search-icon"
+                    aria-hidden="true"
+                >
+                    🔍
+                </span>
+
+                <input
+                    type="search"
+                    id="input-busca-global"
+                    placeholder="Pesquise um produto, curso ou tarjeta..."
+                    aria-label="Pesquisar produtos"
+                    autocomplete="off"
+                >
+
+            </div>
+
+            <!-- AÇÕES -->
+            <div class="header-actions">
+
+                <button
+                    type="button"
+                    id="btn-login-header"
+                    class="btn-tatico btn-secundario"
+                    aria-label="Abrir área de acesso"
+                >
+                    👤 Entrar
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-carrinho-toggle"
+                    class="btn-tatico btn-primario carrinho-trigger"
+                    aria-label="Abrir carrinho de compras"
+                >
+                    🛒 Carrinho
+
+                    <span
+                        id="contador-carrinho-badge"
+                        aria-label="Quantidade de itens no carrinho"
+                    >
+                        0
+                    </span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-banner">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">
+                ★★★★★ Mais de 500 clientes atendidos
+            </span>
+
+            <h2>Artigos Militares</h2>
+
+            <p class="hero-sub">
+                Fabricação própria com padrão operacional rigoroso
+            </p>
+
+            <div class="hero-features-list">
+                <span>✔ Bordados</span>
+                <span>✔ Uniformes</span>
+                <span>✔ Equipamentos</span>
+            </div>
+
+            <a
+                href="#lista-produtos"
+                class="btn-tatico btn-primario hero-btn-cta"
+            >
+                Ver catálogo
+            </a>
+
+        </div>
+    </section>
+
+    <!-- LOGIN, ADMIN E CONTROLES -->
+    <main
+        id="conteudo-principal"
+        class="main-container"
+    ></main>
+
+    <!-- LOJA -->
+    <div
+        id="area-dinamica-loja"
+        class="loja-wrapper"
+        hidden
+    >
+
+        <!-- FILTROS -->
+        <section
+            id="filtros"
+            class="filtros-section"
+        >
+
+            <div
+                id="container-categorias"
+                class="container-categorias-modernas"
+            >
+
+                <button
+                    type="button"
+                    class="filtro-btn ativo"
+                    data-tipo="categoria"
+                    data-valor="todos"
+                >
+                    ⭐ Todas
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="categoria"
+                    data-valor="Bordados"
+                >
+                    🧵 Bordados
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="categoria"
+                    data-valor="Emborrachados"
+                >
+                    🎖️ Emborrachados
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="categoria"
+                    data-valor="Uniformes"
+                >
+                    👕 Uniformes
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="categoria"
+                    data-valor="Acessórios"
+                >
+                    🎒 Acessórios
+                </button>
+
+            </div>
+
+            <div
+                id="container-patentes"
+                class="container-patentes-modernas"
+            >
+
+                <button
+                    type="button"
+                    class="filtro-btn ativo"
+                    data-tipo="patente"
+                    data-valor="todos"
+                >
+                    Todas as patentes
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="patente"
+                    data-valor="sd"
+                >
+                    SD
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="patente"
+                    data-valor="cb"
+                >
+                    CB
+                </button>
+
+                <button
+                    type="button"
+                    class="filtro-btn"
+                    data-tipo="patente"
+                    data-valor="sgt"
+                >
+                    SGT
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- PRODUTOS E CARRINHO -->
+        <div class="loja-layout-grid">
+
+            <section
+                class="produtos-section"
+                aria-label="Catálogo de produtos"
+            >
+                <div
+                    id="lista-produtos"
+                    class="produtos-grid"
+                ></div>
+            </section>
+
+            <aside
+                id="resumo-carrinho"
+                class="carrinho-aside"
+                aria-label="Carrinho de compras"
+            >
+
+                <div class="carrinho-header-painel">
+                    <h3>🛒 Seu carrinho</h3>
+                </div>
+
+                <div id="conteudo-carrinho">
+                    <p>Seu carrinho está vazio.</p>
+                </div>
+
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- GALERIA -->
+    <section
+        id="conteudo-galeria-fotos"
+        class="loja-wrapper"
+        hidden
+    ></section>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+
+        <div class="footer-container">
+
+            <div class="footer-col">
+                <h3>Artigos Militares</h3>
+
+                <p>
+                    Equipamentos de alta resistência e padrão
+                    operacional para quem serve e protege.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Dados da empresa</h4>
+
+                <p>
+                    <strong>Responsável:</strong>
+                    Julio Cesar Ribeiro Beltrame da Silva
+                </p>
+
+                <p>
+                    <strong>CNPJ:</strong>
+                    38.121.150/0001-26
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contato e plataforma</h4>
+
+                <p>
+                    <strong>WhatsApp:</strong>
+
+                    <a
+                        href="https://wa.me/5511971113924"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="footer-link"
+                    >
+                        (11) 97111-3924
+                    </a>
+                </p>
+
+                <p>
+                    <strong>Site:</strong>
+
+                    <a
+                        href="https://artigos-militares-pm.onrender.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="footer-link"
+                    >
+                        artigos-militares-pm.onrender.com
+                    </a>
+                </p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>
+                &copy; 2026 Artigos Militares.
+                Todos os direitos reservados.
+            </p>
+        </div>
+
+    </footer>
+
+    <!--
+        IMPORTANTE:
+        Somente o main.js é carregado diretamente.
+        Ele importará os demais arquivos.
+    -->
+    <script
+        type="module"
+        src="./main.js"
+    ></script>
+
+</body>
+</html>
