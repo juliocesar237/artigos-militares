@@ -41,51 +41,58 @@ function renderizarEstruturaLoja(isAdmin) {
     const container = document.getElementById('conteudo-principal');
     if (!container) return;
 
-    let botaoAdminHtml = '';
+    let botoesTopoHtml = `
+        <div style="text-align: right; margin-bottom: 15px; display: flex; justify-content: flex-end; gap: 5px; flex-wrap: wrap;">
+            <button onclick="renderizarGaleriaFotos()" style="background: #2980b9; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                📷 Fotos dos Produtos
+            </button>
+    `;
+
     if (isAdmin) {
-        botaoAdminHtml = `
-            <div style="text-align: right; margin-bottom: 15px;">
-                <button onclick="alternarPainelAdmin()" style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                    ⚙️ PAINEL ADMIN: GERENCIAR PRODUTOS E PROMOÇÕES
-                </button>
-                <button onclick="fazerLogout()" style="background: #7f8c8d; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-left: 5px;">
-                    Sair
-                </button>
-            </div>
-            <div id="painel-admin-container" style="display: none; background: #f9f9f9; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 8px;"></div>
-        `;
-    } else {
-        botaoAdminHtml = `
-            <div style="text-align: right; margin-bottom: 15px;">
-                <button onclick="fazerLogout()" style="background: #7f8c8d; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Sair da Conta</button>
-            </div>
+        botoesTopoHtml += `
+            <button onclick="alternarPainelAdmin()" style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                ⚙️ PAINEL ADMIN
+            </button>
         `;
     }
 
+    botoesTopoHtml += `
+            <button onclick="fazerLogout()" style="background: #7f8c8d; color: white; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                Sair
+            </button>
+        </div>
+        <div id="painel-admin-container" style="display: none; background: #f9f9f9; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 8px;"></div>
+    `;
+
     container.innerHTML = `
-        ${botaoAdminHtml}
-        <section id="filtros">
-            <div id="container-categorias">
-                <button class="filtro-btn ativo" onclick="filtrar('categoria', 'todos', this)">TODAS CATEGORIAS</button>
-                <button class="filtro-btn" onclick="filtrar('categoria', 'Bordados', this)">BORDADOS</button>
-                <button class="filtro-btn" onclick="filtrar('categoria', 'Emborrachados', this)">EMBORRACHADOS</button>
-                <button class="filtro-btn" onclick="filtrar('categoria', 'Uniformes', this)">UNIFORMES</button>
-                <button class="filtro-btn" onclick="filtrar('categoria', 'Acessórios', this)">ACESSÓRIOS</button>
-            </div>
-
-            <div id="container-patentes">
-                <button class="filtro-btn ativo" onclick="filtrar('patente', 'todas', this)">TODAS PATENTES</button>
-                <button class="filtro-btn" onclick="filtrar('patente', 'sd', this)">SD</button>
-                <button class="filtro-btn" onclick="filtrar('patente', 'cb', this)">CB</button>
-                <button class="filtro-btn" onclick="filtrar('patente', 'sgt', this)">SGT</button>
-            </div>
-        </section>
-
-        <div id="lista-produtos"></div>
+        ${botoesTopoHtml}
         
-        <section id="resumo-carrinho">
-            <div id="conteudo-carrinho"><p>Seu carrinho está vazio.</p></div>
-        </section>
+        <div id="area-dinamica-loja">
+            <section id="filtros">
+                <div id="container-categorias">
+                    <button class="filtro-btn ativo" onclick="filtrar('categoria', 'todos', this)">TODAS CATEGORIAS</button>
+                    <button class="filtro-btn" onclick="filtrar('categoria', 'Bordados', this)">BORDADOS</button>
+                    <button class="filtro-btn" onclick="filtrar('categoria', 'Emborrachados', this)">EMBORRACHADOS</button>
+                    <button class="filtro-btn" onclick="filtrar('categoria', 'Uniformes', this)">UNIFORMES</button>
+                    <button class="filtro-btn" onclick="filtrar('categoria', 'Acessórios', this)">ACESSÓRIOS</button>
+                </div>
+
+                <div id="container-patentes">
+                    <button class="filtro-btn ativo" onclick="filtrar('patente', 'todas', this)">TODAS PATENTES</button>
+                    <button class="filtro-btn" onclick="filtrar('patente', 'sd', this)">SD</button>
+                    <button class="filtro-btn" onclick="filtrar('patente', 'cb', this)">CB</button>
+                    <button class="filtro-btn" onclick="filtrar('patente', 'sgt', this)">SGT</button>
+                </div>
+            </section>
+
+            <div id="lista-produtos"></div>
+            
+            <section id="resumo-carrinho">
+                <div id="conteudo-carrinho"><p>Seu carrinho está vazio.</p></div>
+            </section>
+        </div>
+
+        <div id="conteudo-galeria-fotos" style="display: none;"></div>
     `;
 }
 
@@ -140,7 +147,6 @@ function renderizarLoja() {
             const ehTargeta = tituloLower.includes('targeta') || tituloLower.includes('tarjeta');
             const placeholderTexto = ehTargeta ? 'Ex: CB PM BELTRAME' : 'Nome';
 
-            // Lógica de exibição de preço e aviso de quantidade mínima tipo mercado
             let htmlPreco = '';
             const precoNum = Number(p.preco) || 0;
             const precoPromoNum = p.precoPromocional ? Number(p.precoPromocional) : null;
@@ -173,6 +179,57 @@ function renderizarLoja() {
             </div>`;
         }
     });
+}
+
+function renderizarGaleriaFotos() {
+    const areaLoja = document.getElementById('area-dinamica-loja');
+    const areaGaleria = document.getElementById('conteudo-galeria-fotos');
+    const painelAdmin = document.getElementById('painel-admin-container');
+    
+    if (!areaLoja || !areaGaleria) return;
+
+    // Fecha painel admin se estiver aberto
+    if (painelAdmin) painelAdmin.style.display = 'none';
+
+    areaLoja.style.display = 'none';
+    areaGaleria.style.display = 'block';
+
+    let htmlProdutosFotos = '';
+    
+    if (listaProdutosAtual.length === 0) {
+        htmlProdutosFotos = '<p>Nenhum produto cadastrado para exibir fotos.</p>';
+    } else {
+        htmlProdutosFotos = listaProdutosAtual.map(p => `
+            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; border: 1px solid #ddd;">
+                ${p.imagem ? `<img src="${p.imagem}" alt="${p.titulo}" style="width: 100%; height: 200px; object-fit: contain; border-radius: 4px; background: #fff; margin-bottom: 10px;">` : '<div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; color: #888; border-radius: 4px; margin-bottom: 10px;">Sem Imagem</div>'}
+                <h4 style="margin: 10px 0 5px 0; color: #2c3e50;">${p.titulo}</h4>
+                <p style="color: #27ae60; font-weight: bold; margin: 0;">R$ ${Number(p.preco).toFixed(2)}</p>
+            </div>
+        `).join('');
+    }
+
+    areaGaleria.innerHTML = `
+        <div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0; color: #2c3e50;">📷 Galeria de Fotos dos Produtos</h2>
+                <button onclick="voltarParaLoja()" style="background: #2c3e50; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer;">← Voltar para a Loja</button>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">Visualize abaixo todas as imagens cadastradas para os artigos militares.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+                ${htmlProdutosFotos}
+            </div>
+        </div>
+    `;
+}
+
+function voltarParaLoja() {
+    const areaLoja = document.getElementById('area-dinamica-loja');
+    const areaGaleria = document.getElementById('conteudo-galeria-fotos');
+    
+    if (areaLoja && areaGaleria) {
+        areaGaleria.style.display = 'none';
+        areaLoja.style.display = 'block';
+    }
 }
 
 function alternarPainelAdmin() {
@@ -379,7 +436,6 @@ function alterarQuantidade(index, delta) {
     if (typeof renderizarCarrinho === 'function') renderizarCarrinho(carrinho);
 }
 
-// 1. Função de Cálculo com verificação da quantidade mínima exigida para o Pix
 function calcularTotal(carrinho) {
     let totalPix = 0, totalCartao = 0;
     let qtdBordados = 0, qtdTargetas = 0;
@@ -396,7 +452,6 @@ function calcularTotal(carrinho) {
         
         const qtdMinima = item.quantidadeMinimaPromo ? Number(item.quantidadeMinimaPromo) : 1;
 
-        // O Pix só usa o valor promocional se a quantidade atingir ou passar da quantidade mínima configurada
         const temDireitoPromo = (precoPromo && precoPromo > 0 && precoPromo < precoNormal && qtd >= qtdMinima);
         const valorUnitarioPix = temDireitoPromo ? precoPromo : precoNormal;
         const valorUnitarioCartao = precoNormal;
@@ -429,7 +484,6 @@ function calcularTotal(carrinho) {
     return { totalPix, totalCartao };
 }
 
-// 2. Função de Renderização do Carrinho com o campo de Batalhão
 function renderizarCarrinho(carrinho) {
     const container = document.getElementById('conteudo-carrinho');
     if (!container) return;
@@ -481,7 +535,6 @@ function renderizarCarrinho(carrinho) {
     `;
 }
 
-// 3. Função de Finalizar Pedido via WhatsApp
 function finalizarPedidoWhatsApp() {
     if (carrinho.length === 0) {
         alert("Seu carrinho está vazio!");
