@@ -66,7 +66,7 @@ document.addEventListener(
     iniciarAplicacao
 );
 
-function iniciarAplicacao() {
+async function iniciarAplicacao() {
     let usuario = null;
 
     try {
@@ -79,7 +79,7 @@ function iniciarAplicacao() {
     }
 
     if (usuario) {
-        inicializarSistema(usuario);
+        await inicializarSistema(usuario);
         return;
     }
 
@@ -98,12 +98,17 @@ function iniciarAplicacao() {
  *
  * @param {object} usuario
  */
-function inicializarSistema(usuario) {
+async function inicializarSistema(usuario) {
     window.AppState.usuarioLogado =
         usuario;
 
-    window.AppState.listaProdutosAtual =
-        carregarProdutos();
+    try {
+        const produtos = await carregarProdutos();
+        window.AppState.listaProdutosAtual = Array.isArray(produtos) ? produtos : [];
+    } catch (erro) {
+        console.error('Erro ao carregar produtos na inicialização:', erro);
+        window.AppState.listaProdutosAtual = [];
+    }
 
     renderizarEstruturaLoja(usuario);
     mostrarLoja();
@@ -207,6 +212,10 @@ function renderizarEstruturaLoja(usuario) {
 function atualizarInterface() {
     if (!window.AppState) {
         return;
+    }
+
+    if (!Array.isArray(window.AppState.listaProdutosAtual)) {
+        window.AppState.listaProdutosAtual = [];
     }
 
     renderizarProdutos();

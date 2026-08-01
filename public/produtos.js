@@ -1,105 +1,33 @@
 // =========================================================================
-// PRODUTOS.JS — CATÁLOGO, GALERIA E PAINEL ADMINISTRATIVO
+// PRODUTOS.JS — CATÁLOGO, GALERIA E PAINEL ADMINISTRATIVO (VIA API BACKEND)
 // =========================================================================
 
-export const produtosPadrao = [
-    { id: 1, categoria: "Bordados", patente: "sd", titulo: "Curso de SD", preco: 8.0, precoPromocional: null, quantidadeMinimaPromo: 1, imagem: "" },
-    { id: 2, categoria: "Bordados", patente: "sgt", titulo: "Curso de SGT", preco: 8.0, precoPromocional: null, quantidadeMinimaPromo: 1, imagem: "" },
-    { id: 3, categoria: "Bordados", patente: "geral", titulo: "Curso CAIS", preco: 8.0, imagem: "" },
-    { id: 4, categoria: "Bordados", patente: "geral", titulo: "Bandeira Paulista Bordada", preco: 10.0, imagem: "" },
-    { id: 5, categoria: "Bordados", patente: "geral", titulo: "Targeta operacional", preco: 8.0, personalizavel: true, imagem: "" },
-    { id: 6, categoria: "Bordados", patente: "geral", titulo: "Targeta ed fisica", preco: 8.0, personalizavel: true, imagem: "" },
-
-    { id: 7, categoria: "Emborrachados", patente: "geral", titulo: "Listel", preco: 20.0, imagem: "" },
-    { id: 8, categoria: "Emborrachados", patente: "geral", titulo: "Logo Colorido", preco: 20.0, imagem: "" },
-    { id: 9, categoria: "Emborrachados", patente: "geral", titulo: "Polícia Militar Emborrachado (Costas)", preco: 30.0, imagem: "" },
-    { id: 10, categoria: "Emborrachados", patente: "geral", titulo: "Láureas de Garrafão Emborrachados", preco: 20.0, imagem: "" },
-    { id: 11, categoria: "Emborrachados", patente: "geral", titulo: "Cursos Emborrachados", preco: 20.0, imagem: "" },
-    { id: 12, categoria: "Emborrachados", patente: "geral", titulo: "Patrulheiro Emborrachado", preco: 20.0, imagem: "" },
-    { id: 13, categoria: "Emborrachados", patente: "geral", titulo: "Direção Defensiva", preco: 20.0, imagem: "" },
-    { id: 14, categoria: "Emborrachados", patente: "geral", titulo: "Trânsito Urbano", preco: 20.0, imagem: "" },
-    { id: 15, categoria: "Emborrachados", patente: "geral", titulo: "Bandeira Paulista Emborrachada", preco: 20.0, imagem: "" },
-    { id: 16, categoria: "Emborrachados", patente: "geral", titulo: "Brasões dos Batalhões Emborrachados", preco: 30.0, imagem: "" },
-    { id: 17, categoria: "Emborrachados", patente: "sd", titulo: "Divisa Emborrachada (Colete Modular) - SD", preco: 20.0, imagem: "" },
-    { id: 18, categoria: "Emborrachados", patente: "cb", titulo: "Divisa Emborrachada (Colete Modular) - CB", preco: 20.0, imagem: "" },
-    { id: 19, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa Emborrachada (Colete Modular) - 3º SGT", preco: 20.0, imagem: "" },
-    { id: 20, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa Emborrachada (Colete Modular) - 2º SGT", preco: 20.0, imagem: "" },
-    { id: 21, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa Emborrachada (Colete Modular) - 1º SGT", preco: 20.0, imagem: "" },
-    { id: 22, categoria: "Emborrachados", patente: "sd", titulo: "Divisa para Gandola (Emborrachada) - SD", preco: 5.0, imagem: "" },
-    { id: 23, categoria: "Emborrachados", patente: "cb", titulo: "Divisa para Gandola (Emborrachada) - CB", preco: 5.0, imagem: "" },
-    { id: 24, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa para Gandola (Emborrachada) - 3º SGT", preco: 5.0, imagem: "" },
-    { id: 25, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa para Gandola (Emborrachada) - 2º SGT", preco: 5.0, imagem: "" },
-    { id: 26, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa para Gandola (Emborrachada) - 1º SGT", preco: 5.0, imagem: "" },
-    { id: 27, categoria: "Emborrachados", patente: "sgt", titulo: "Divisa para Gandola (Emborrachada) - Sub-Tenente", preco: 5.0, imagem: "" },
-    { id: 28, categoria: "Emborrachados", patente: "geral", titulo: "Divisa para Gandola (Emborrachada) - Bucaneiro", preco: 5.0, imagem: "" },
-    { id: 29, categoria: "Emborrachados", patente: "geral", titulo: "Divisa para Gandola (Emborrachada) - Bomboneiro", preco: 5.0, imagem: "" },
-
-    { id: 30, categoria: "Uniformes", patente: "geral", titulo: "Agasalho", preco: 120.0, tamanho: true, imagem: "" },
-    { id: 31, categoria: "Uniformes", patente: "geral", titulo: "Camisetas Ed física", preco: 32.0, tamanho: true, imagem: "" },
-    { id: 32, categoria: "Uniformes", patente: "geral", titulo: "Camisetas cinzas", preco: 40.0, tamanho: true, imagem: "" },
-    { id: 33, categoria: "Uniformes", patente: "geral", titulo: "Shorts Ed física", preco: 30.0, tamanho: true, imagem: "" },
-    { id: 34, categoria: "Uniformes", patente: "geral", titulo: "Shorts térmico", preco: 30.0, tamanho: true, imagem: "" },
-    { id: 35, categoria: "Uniformes", patente: "geral", titulo: "Sunga box", preco: 40.0, tamanho: true, imagem: "" },
-
-    { id: 36, categoria: "Acessórios", patente: "geral", titulo: "Faixa refletiva", preco: 25.0, imagem: "" },
-    { id: 37, categoria: "Acessórios", patente: "geral", titulo: "Coldre da DM", preco: 100.0, imagem: "" },
-    { id: 38, categoria: "Acessórios", patente: "geral", titulo: "Carregador da Bélica de polímero", preco: 120.0, imagem: "" },
-    { id: 39, categoria: "Acessórios", patente: "geral", titulo: "Porta carregador de fuzil", preco: 75.0, imagem: "" },
-    { id: 40, categoria: "Acessórios", patente: "geral", titulo: "Capa modular", preco: 520.0, imagem: "" },
-    { id: 41, categoria: "Acessórios", patente: "geral", titulo: "Adaptador de perna para o coldre da PM", preco: 55.0, imagem: "" },
-    { id: 42, categoria: "Acessórios", patente: "geral", titulo: "Bandoleira", preco: 50.0, imagem: "" },
-    { id: 43, categoria: "Acessórios", patente: "geral", titulo: "Lanterna USB", preco: 35.0, imagem: "" },
-    { id: 44, categoria: "Acessórios", patente: "geral", titulo: "Abafador auricular", preco: 30.0, imagem: "" },
-    { id: 45, categoria: "Acessórios", patente: "geral", titulo: "Alicate multiuso", preco: 45.0, imagem: "" },
-    { id: 46, categoria: "Acessórios", patente: "geral", titulo: "Faca padrão da polícia (Modelo 1)", preco: 50.0, imagem: "" },
-    { id: 47, categoria: "Acessórios", patente: "geral", titulo: "Faca padrão da polícia (Modelo 2)", preco: 60.0, imagem: "" },
-    { id: 48, categoria: "Acessórios", patente: "geral", titulo: "Verniz (250ml)", preco: 40.0, imagem: "" },
-    { id: 49, categoria: "Acessórios", patente: "geral", titulo: "Verniz (100ml)", preco: 25.0, imagem: "" },
-    { id: 50, categoria: "Acessórios", patente: "geral", titulo: "Graxa", preco: 40.0, imagem: "" },
-    { id: 51, categoria: "Acessórios", patente: "geral", titulo: "Kit escova de sapato", preco: 25.0, imagem: "" },
-    { id: 52, categoria: "Acessórios", patente: "geral", titulo: "Cadeado de segredo", preco: 30.0, imagem: "" },
-    { id: 53, categoria: "Acessórios", patente: "geral", titulo: "Cadeado de chave", preco: 30.0, imagem: "" },
-    { id: 54, categoria: "Acessórios", patente: "geral", titulo: "Organizador de armário", preco: 50.0, imagem: "" },
-    { id: 55, categoria: "Acessórios", patente: "geral", titulo: "Transportador de farda", preco: 50.0, imagem: "" },
-    { id: 56, categoria: "Acessórios", patente: "geral", titulo: "Prancheta personalizada", preco: 60.0, imagem: "" },
-    { id: 57, categoria: "Acessórios", patente: "geral", titulo: "Elástico de prancheta personalizada", preco: 15.0, imagem: "" },
-    { id: 58, categoria: "Acessórios", patente: "geral", titulo: "Priscila (Emborrachada ou Pano)", preco: 20.0, imagem: "" },
-    { id: 59, categoria: "Acessórios", patente: "geral", titulo: "Touca de natação", preco: 20.0, imagem: "" }
-];
-
-const CHAVE_PRODUTOS = 'meus_produtos_tropa';
-
-function salvarProdutos() {
-    if (!window.AppState) {
-        console.error('AppState não foi inicializado.');
-        return;
-    }
-
-    localStorage.setItem(
-        CHAVE_PRODUTOS,
-        JSON.stringify(window.AppState.listaProdutosAtual)
-    );
-}
-
-export function carregarProdutos() {
+/**
+ * Carrega todos os produtos diretamente da API do backend.
+ * Substitui a antiga lógica síncrona do localStorage.
+ * 
+ * @returns {Promise<Array>} Lista de produtos obtida do servidor
+ */
+export async function carregarProdutos() {
     try {
-        const salvos = JSON.parse(
-            localStorage.getItem(CHAVE_PRODUTOS)
-        );
-
-        if (Array.isArray(salvos) && salvos.length > 0) {
-            return salvos;
+        const resposta = await fetch('/api/produtos');
+        
+        if (!resposta.ok) {
+            throw new Error(`Erro ao buscar produtos: ${resposta.statusText}`);
         }
-    } catch (erro) {
-        console.warn(
-            'Não foi possível carregar os produtos salvos.',
-            erro
-        );
-    }
 
-    return produtosPadrao.map(produto => ({
-        ...produto
-    }));
+        const produtos = await resposta.json();
+        
+        if (window.AppState) {
+            window.AppState.listaProdutosAtual = Array.isArray(produtos) ? produtos : [];
+        }
+
+        return window.AppState ? window.AppState.listaProdutosAtual : produtos;
+    } catch (erro) {
+        console.error('Falha ao carregar produtos do servidor:', erro);
+        alert('Não foi possível carregar os produtos do servidor.');
+        return [];
+    }
 }
 
 export function renderizarProdutos() {
@@ -372,19 +300,11 @@ function criarCardProduto(produto) {
 
 
 // =========================================================================
-// CADASTRO DE NOVO PRODUTO
+// CADASTRO DE NOVO PRODUTO (VIA POST /api/produtos)
 // =========================================================================
 
-export function adicionarNovoProdutoAdmin(event) {
+export async function adicionarNovoProdutoAdmin(event) {
     event?.preventDefault();
-
-    if (!window.AppState) {
-        console.error(
-            'AppState não foi inicializado.'
-        );
-
-        return false;
-    }
 
     const titulo = document
         .getElementById(
@@ -491,53 +411,66 @@ export function adicionarNovoProdutoAdmin(event) {
             );
 
     const novoProduto = {
-        id: Date.now(),
         titulo,
         categoria,
         patente,
         preco,
         precoPromocional,
-        quantidadeMinimaPromo:
-            quantidadeMinima,
+        quantidadeMinimaPromo: quantidadeMinima,
         imagem,
         personalizavel,
         tamanho
     };
 
-    window.AppState.listaProdutosAtual.push(
-        novoProduto
-    );
+    try {
+        const resposta = await fetch('/api/produtos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(novoProduto)
+        });
 
-    salvarProdutos();
+        if (!resposta.ok) {
+            throw new Error('Erro ao cadastrar produto no servidor.');
+        }
 
-    document
-        .getElementById(
-            'form-adicionar-produto'
-        )
-        ?.reset();
+        // Recarrega os produtos atualizados do backend
+        await carregarProdutos();
 
-    renderizarConteudoAdmin();
+        document
+            .getElementById(
+                'form-adicionar-produto'
+            )
+            ?.reset();
 
-    if (
-        typeof window.atualizarInterface ===
-        'function'
-    ) {
-        window.atualizarInterface();
+        renderizarConteudoAdmin();
+
+        if (
+            typeof window.atualizarInterface ===
+            'function'
+        ) {
+            window.atualizarInterface();
+        }
+
+        alert(
+            'Produto cadastrado com sucesso.'
+        );
+
+        return true;
+    } catch (erro) {
+        console.error('Erro ao adicionar produto:', erro);
+        alert('Não foi possível cadastrar o produto.');
+        return false;
     }
-
-    alert(
-        'Produto cadastrado com sucesso.'
-    );
-
-    return true;
 }
 
 
 // =========================================================================
-// REMOÇÃO DE PRODUTO
+// REMOÇÃO DE PRODUTO (VIA DELETE /api/produtos/:id)
 // =========================================================================
 
-export function removerProdutoAdmin(id) {
+export async function removerProdutoAdmin(id) {
     if (!window.AppState) {
         return false;
     }
@@ -565,31 +498,40 @@ export function removerProdutoAdmin(id) {
         return false;
     }
 
-    window.AppState.listaProdutosAtual =
-        window.AppState.listaProdutosAtual.filter(
-            item =>
-                Number(item.id) !==
-                Number(id)
-        );
+    try {
+        const resposta = await fetch(`/api/produtos/${id}`, {
+            method: 'DELETE'
+        });
 
-    salvarProdutos();
-    renderizarConteudoAdmin();
+        if (!resposta.ok) {
+            throw new Error('Erro ao remover produto no servidor.');
+        }
 
-    if (
-        typeof window.atualizarInterface ===
-        'function'
-    ) {
-        window.atualizarInterface();
+        // Atualiza a lista após a exclusão
+        await carregarProdutos();
+        renderizarConteudoAdmin();
+
+        if (
+            typeof window.atualizarInterface ===
+            'function'
+        ) {
+            window.atualizarInterface();
+        }
+
+        return true;
+    } catch (erro) {
+        console.error('Erro ao remover produto:', erro);
+        alert('Não foi possível remover o produto.');
+        return false;
     }
-
-    return true;
 }
+
+
 // =========================================================================
-// SALVAMENTO DAS ALTERAÇÕES DO PAINEL
+// SALVAMENTO DAS ALTERAÇÕES DO PAINEL (VIA PUT /api/produtos/:id)
 // =========================================================================
 
-export function salvarNovosPrecos() {
-
+export async function salvarNovosPrecos() {
     if (!window.AppState) {
         console.error(
             'AppState não foi inicializado.'
@@ -598,114 +540,83 @@ export function salvarNovosPrecos() {
         return false;
     }
 
-    window.AppState.listaProdutosAtual.forEach(produto => {
+    try {
+        const promessasAtualizacao = window.AppState.listaProdutosAtual.map(async produto => {
+            const inputPreco = document.getElementById(`admin-preco-${produto.id}`);
+            const inputPromocional = document.getElementById(`admin-promo-${produto.id}`);
+            const inputQtdMinima = document.getElementById(`admin-qtdmin-${produto.id}`);
+            const inputImagem = document.getElementById(`admin-imagem-${produto.id}`);
 
-        const inputPreco =
-            document.getElementById(
-                `admin-preco-${produto.id}`
-            );
+            // Clona o produto atual para ajustar os valores modificados no DOM
+            const produtoAtualizado = { ...produto };
 
-        const inputPromocional =
-            document.getElementById(
-                `admin-promo-${produto.id}`
-            );
-
-        const inputQtdMinima =
-            document.getElementById(
-                `admin-qtdmin-${produto.id}`
-            );
-
-        const inputImagem =
-            document.getElementById(
-                `admin-imagem-${produto.id}`
-            );
-
-        if (inputPreco) {
-
-            const preco =
-                Number(inputPreco.value);
-
-            if (
-                Number.isFinite(preco) &&
-                preco >= 0
-            ) {
-                produto.preco = preco;
-            }
-
-        }
-
-        if (inputPromocional) {
-
-            const texto =
-                inputPromocional.value.trim();
-
-            if (texto === '') {
-
-                produto.precoPromocional = null;
-
-            } else {
-
-                const valor =
-                    Number(texto);
-
-                if (
-                    Number.isFinite(valor) &&
-                    valor >= 0 &&
-                    valor < produto.preco
-                ) {
-
-                    produto.precoPromocional =
-                        valor;
-
+            if (inputPreco) {
+                const preco = Number(inputPreco.value);
+                if (Number.isFinite(preco) && preco >= 0) {
+                    produtoAtualizado.preco = preco;
                 }
-
             }
 
+            if (inputPromocional) {
+                const texto = inputPromocional.value.trim();
+                if (texto === '') {
+                    produtoAtualizado.precoPromocional = null;
+                } else {
+                    const valor = Number(texto);
+                    if (Number.isFinite(valor) && valor >= 0 && valor < produtoAtualizado.preco) {
+                        produtoAtualizado.precoPromocional = valor;
+                    }
+                }
+            }
+
+            if (inputQtdMinima) {
+                const qtd = parseInt(inputQtdMinima.value, 10);
+                produtoAtualizado.quantidadeMinimaPromo = Number.isInteger(qtd) ? Math.max(1, qtd) : 1;
+            }
+
+            if (inputImagem) {
+                produtoAtualizado.imagem = inputImagem.value.trim();
+            }
+
+            // Envia cada alteração de produto via PUT para a API
+            const resposta = await fetch(`/api/produtos/${produto.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(produtoAtualizado)
+            });
+
+            if (!resposta.ok) {
+                throw new Error(`Erro ao atualizar produto ID ${produto.id}`);
+            }
+        });
+
+        // Aguarda todas as requisições PUT terminarem
+        await Promise.all(promessasAtualizacao);
+
+        // Recarrega a lista oficial do banco via backend
+        await carregarProdutos();
+
+        renderizarConteudoAdmin();
+
+        if (
+            typeof window.atualizarInterface ===
+            'function'
+        ) {
+            window.atualizarInterface();
         }
 
-        if (inputQtdMinima) {
+        alert(
+            'Produtos atualizados com sucesso.'
+        );
 
-            const qtd =
-                parseInt(
-                    inputQtdMinima.value,
-                    10
-                );
-
-            produto.quantidadeMinimaPromo =
-                Number.isInteger(qtd)
-                    ? Math.max(1, qtd)
-                    : 1;
-
-        }
-
-        if (inputImagem) {
-
-            produto.imagem =
-                inputImagem.value.trim();
-
-        }
-
-    });
-
-    salvarProdutos();
-
-    renderizarConteudoAdmin();
-
-    if (
-        typeof window.atualizarInterface ===
-        'function'
-    ) {
-
-        window.atualizarInterface();
-
+        return true;
+    } catch (erro) {
+        console.error('Erro ao salvar alterações:', erro);
+        alert('Ocorreu um erro ao salvar as alterações no servidor.');
+        return false;
     }
-
-    alert(
-        'Produtos atualizados com sucesso.'
-    );
-
-    return true;
-
 }
 
 
@@ -714,7 +625,6 @@ export function salvarNovosPrecos() {
 // =========================================================================
 
 export function alternarPainelAdmin() {
-
     const painel =
         document.getElementById(
             'painel-admin-container'
@@ -728,11 +638,8 @@ export function alternarPainelAdmin() {
         !painel.hidden;
 
     if (!painel.hidden) {
-
         renderizarConteudoAdmin();
-
     }
-
 }
 
 
@@ -741,7 +648,6 @@ export function alternarPainelAdmin() {
 // =========================================================================
 
 export function renderizarConteudoAdmin() {
-
     const painel =
         document.getElementById(
             'painel-admin-container'
@@ -1084,6 +990,8 @@ export function atualizarPreviaImagemAdmin(id) {
         </span>
     `;
 }
+
+
 // =========================================================================
 // GALERIA DE PRODUTOS
 // =========================================================================
@@ -1147,12 +1055,6 @@ export function renderizarGaleriaFotos() {
 }
 
 
-/**
- * Cria um card da galeria.
- *
- * @param {object} produto
- * @returns {string}
- */
 function criarCardGaleria(produto) {
     const preco =
         Number(produto.preco) || 0;
@@ -1203,9 +1105,6 @@ function criarCardGaleria(produto) {
 }
 
 
-/**
- * Fecha a galeria e volta para o catálogo.
- */
 export function voltarParaLoja() {
     const areaLoja = document.getElementById(
         'area-dinamica-loja'
@@ -1231,16 +1130,12 @@ export function voltarParaLoja() {
         });
     }
 }
+
+
 // =========================================================================
 // FUNÇÕES AUXILIARES
 // =========================================================================
 
-/**
- * Protege textos exibidos dentro do HTML.
- *
- * @param {unknown} valor
- * @returns {string}
- */
 function escaparHtml(valor) {
     return String(valor ?? '')
         .replaceAll('&', '&amp;')
@@ -1250,13 +1145,6 @@ function escaparHtml(valor) {
         .replaceAll("'", '&#039;');
 }
 
-
-/**
- * Protege valores inseridos em atributos HTML.
- *
- * @param {unknown} valor
- * @returns {string}
- */
 function escaparAtributo(valor) {
     return escaparHtml(valor)
         .replaceAll('`', '&#096;');
