@@ -112,8 +112,41 @@ async function inicializarSistema(usuario) {
 
     renderizarEstruturaLoja(usuario);
     mostrarLoja();
+    configurarEventosBuscaEFiltros();
     atualizarInterface();
     atualizarBotaoLogin();
+}
+
+
+// =========================================================================
+// CONFIGURAÇÃO DE EVENTOS DE BUSCA E FILTROS
+// =========================================================================
+
+function configurarEventosBuscaEFiltros() {
+    const inputBusca = document.getElementById('input-busca-global');
+    if (inputBusca && !inputBusca.dataset.listenerConfigurado) {
+        inputBusca.dataset.listenerConfigurado = 'true';
+        inputBusca.addEventListener('input', (event) => {
+            executarBuscaInstantanea(event.target.value);
+        });
+    }
+
+    const botoesFiltro = document.querySelectorAll(
+        '#container-categorias .filtro-btn, #container-patentes .filtro-btn'
+    );
+
+    botoesFiltro.forEach(botao => {
+        if (!botao.dataset.listenerConfigurado) {
+            botao.dataset.listenerConfigurado = 'true';
+            botao.addEventListener('click', () => {
+                const tipo = botao.dataset.tipo;
+                const valor = botao.dataset.valor;
+                if (tipo) {
+                    aplicarFiltro(tipo, valor, botao);
+                }
+            });
+        }
+    });
 }
 
 
@@ -269,33 +302,23 @@ function aplicarFiltro(
             .trim()
             .toLowerCase();
 
-    const valorNormalizado =
+    let valorNormalizado =
         String(valor || '')
             .trim()
             .toLowerCase();
 
-    /*
-     * Atualiza diretamente o AppState.
-     * Isso garante compatibilidade mesmo que filtros.js
-     * mantenha estado interno separado.
-     */
+    if (valorNormalizado === 'todas' || valorNormalizado === 'todos') {
+        valorNormalizado = 'todos';
+    }
+
     if (tipoNormalizado === 'categoria') {
-        window.AppState.categoriaAtual =
-            valorNormalizado === 'todas'
-                ? 'todos'
-                : valorNormalizado;
+        window.AppState.categoriaAtual = valorNormalizado;
     }
 
     if (tipoNormalizado === 'patente') {
-        window.AppState.patenteAtual =
-            valorNormalizado === 'todas'
-                ? 'todos'
-                : valorNormalizado;
+        window.AppState.patenteAtual = valorNormalizado;
     }
 
-    /*
-     * Mantém o controle visual do botão ativo.
-     */
     if (botao?.parentElement) {
         botao.parentElement
             .querySelectorAll('.filtro-btn')
@@ -306,9 +329,6 @@ function aplicarFiltro(
         botao.classList.add('ativo');
     }
 
-    /*
-     * Executa também a função do módulo de filtros.
-     */
     try {
         filtrar(
             tipo,
@@ -448,9 +468,9 @@ function alternarPainel() {
 }
 
 
-function cadastrarProduto(event) {
+async function cadastrarProduto(event) {
     const cadastrado =
-        adicionarNovoProdutoAdmin(
+        await adicionarNovoProdutoAdmin(
             event
         );
 
@@ -462,9 +482,9 @@ function cadastrarProduto(event) {
 }
 
 
-function removerProduto(id) {
+async function removerProduto(id) {
     const removido =
-        removerProdutoAdmin(
+        await removerProdutoAdmin(
             Number(id)
         );
 
@@ -476,9 +496,9 @@ function removerProduto(id) {
 }
 
 
-function salvarAlteracoesProdutos() {
+async function salvarAlteracoesProdutos() {
     const salvo =
-        salvarNovosPrecos();
+        await salvarNovosPrecos();
 
     if (salvo) {
         atualizarInterface();
