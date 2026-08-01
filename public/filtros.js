@@ -3,7 +3,7 @@
 // =========================================================================
 
 /**
- * Atualiza o filtro selecionado no estado global da aplicação.
+ * Atualiza os filtros de categoria ou patente.
  *
  * @param {'categoria'|'patente'} tipo
  * @param {string} valor
@@ -12,60 +12,93 @@
 export function filtrar(tipo, valor, botao = null) {
     if (!window.AppState) {
         console.error(
-            'AppState não foi inicializado antes da execução dos filtros.'
+            'AppState não foi inicializado antes dos filtros.'
         );
 
-        return;
+        return false;
     }
 
-    const valorNormalizado = String(valor || '')
+    const tipoNormalizado = String(tipo || '')
         .trim()
         .toLowerCase();
 
-    if (tipo === 'categoria') {
+    let valorNormalizado = String(valor || '')
+        .trim()
+        .toLowerCase();
+
+    /*
+     * Padroniza todas/todos para "todos".
+     */
+    if (
+        valorNormalizado === 'todas' ||
+        valorNormalizado === ''
+    ) {
+        valorNormalizado = 'todos';
+    }
+
+    if (tipoNormalizado === 'categoria') {
         window.AppState.categoriaAtual =
-            valorNormalizado || 'todos';
-    } else if (tipo === 'patente') {
+            valorNormalizado;
+    } else if (tipoNormalizado === 'patente') {
         window.AppState.patenteAtual =
-            valorNormalizado || 'todos';
+            valorNormalizado;
     } else {
         console.warn(
             `Tipo de filtro inválido: ${tipo}`
         );
 
-        return;
+        return false;
     }
 
     atualizarEstadoVisual(botao);
+
+    /*
+     * Renderiza novamente os produtos.
+     */
+    if (
+        typeof window.atualizarInterface ===
+        'function'
+    ) {
+        window.atualizarInterface();
+    }
+
+    return true;
 }
 
 /**
- * Remove a classe "ativo" dos botões do mesmo grupo
- * e aplica no botão selecionado.
+ * Atualiza visualmente o botão selecionado.
  *
  * @param {HTMLElement|null} botao
  */
 function atualizarEstadoVisual(botao) {
-    if (
-        !botao ||
-        !botao.parentElement
-    ) {
+    if (!botao) {
         return;
     }
 
-    const botoesDoGrupo =
-        botao.parentElement.querySelectorAll(
-            '.filtro-btn'
-        );
+    /*
+     * Procura o grupo mais próximo para não depender
+     * apenas do elemento pai imediato.
+     */
+    const grupo =
+        botao.closest(
+            '#container-categorias, #container-patentes'
+        ) ||
+        botao.parentElement;
 
-    botoesDoGrupo.forEach(item => {
-        item.classList.remove('ativo');
+    if (!grupo) {
+        return;
+    }
 
-        item.setAttribute(
-            'aria-pressed',
-            'false'
-        );
-    });
+    grupo
+        .querySelectorAll('.filtro-btn')
+        .forEach(item => {
+            item.classList.remove('ativo');
+
+            item.setAttribute(
+                'aria-pressed',
+                'false'
+            );
+        });
 
     botao.classList.add('ativo');
 
@@ -76,20 +109,21 @@ function atualizarEstadoVisual(botao) {
 }
 
 /**
- * Restaura todos os filtros ao estado inicial.
+ * Limpa categoria, patente e texto pesquisado.
  */
 export function limparFiltros() {
     if (!window.AppState) {
-        return;
+        return false;
     }
 
     window.AppState.categoriaAtual = 'todos';
     window.AppState.patenteAtual = 'todos';
     window.AppState.textoBusca = '';
 
-    const campoBusca = document.getElementById(
-        'input-busca-global'
-    );
+    const campoBusca =
+        document.getElementById(
+            'input-busca-global'
+        );
 
     if (campoBusca) {
         campoBusca.value = '';
@@ -102,25 +136,34 @@ export function limparFiltros() {
     restaurarBotoesFiltro(
         'container-patentes'
     );
+
+    if (
+        typeof window.atualizarInterface ===
+        'function'
+    ) {
+        window.atualizarInterface();
+    }
+
+    return true;
 }
 
 /**
- * Ativa o primeiro botão de um grupo de filtros.
+ * Ativa o primeiro botão de determinado grupo.
  *
  * @param {string} containerId
  */
 function restaurarBotoesFiltro(containerId) {
-    const container = document.getElementById(
-        containerId
-    );
+    const container =
+        document.getElementById(containerId);
 
     if (!container) {
         return;
     }
 
-    const botoes = container.querySelectorAll(
-        '.filtro-btn'
-    );
+    const botoes =
+        container.querySelectorAll(
+            '.filtro-btn'
+        );
 
     botoes.forEach((botao, indice) => {
         const ativo = indice === 0;
