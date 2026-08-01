@@ -957,3 +957,255 @@ body {
         height: 65px;
     }
 }
+/* ==========================================
+   UPLOAD DE IMAGENS DOS PRODUTOS
+   ========================================== */
+
+.admin-upload-imagem {
+    grid-column: 1 / -1;
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 14px;
+
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+/* Campo que recebe automaticamente a URL */
+.admin-upload-imagem #adm-imagem-produto {
+    width: 100%;
+    min-height: 42px;
+
+    padding: 0 12px;
+
+    background-color: var(--bg-surface);
+    color: var(--color-text);
+
+    border: 1px solid var(--border-color);
+    border-radius: var(--botao-radius);
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+
+    outline: none;
+}
+
+.admin-upload-imagem #adm-imagem-produto:focus {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(75, 107, 60, 0.22);
+}
+
+/* Área de arrastar e soltar */
+.upload-area {
+    width: 100%;
+    min-height: 145px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 22px;
+
+    background-color: var(--bg-surface);
+    color: var(--color-text);
+
+    border: 2px dashed var(--color-primary);
+    border-radius: 8px;
+
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+
+    transition:
+        background-color var(--transition-speed),
+        border-color var(--transition-speed),
+        transform var(--transition-speed),
+        box-shadow var(--transition-speed);
+}
+
+.upload-area strong {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.upload-area span {
+    color: var(--color-muted);
+    font-size: 0.78rem;
+}
+
+.upload-area::before {
+    content: "📷";
+    display: block;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.upload-area:hover,
+.upload-area:focus {
+    background-color:
+        rgba(75, 107, 60, 0.14);
+
+    border-color:
+        var(--color-primary-hover);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(75, 107, 60, 0.18);
+
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.upload-area.arrastando {
+    background-color:
+        rgba(75, 107, 60, 0.25);
+
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(212, 175, 55, 0.16);
+
+    transform: scale(1.01);
+}
+
+/* Mensagem: enviando, sucesso ou erro */
+.upload-status {
+    width: 100%;
+    min-height: 22px;
+
+    color: var(--color-primary-hover);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Prévia do formulário de produto novo */
+#upload-previa-novo-produto {
+    width: 150px;
+    height: 130px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+#upload-previa-novo-produto:empty {
+    display: none;
+}
+
+#upload-previa-novo-produto img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+    object-fit: contain;
+
+    padding: 5px;
+}
+
+/* Botão de escolher imagem dos produtos existentes */
+.btn-upload-produto {
+    width: 100%;
+    min-height: 36px;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 7px 12px;
+
+    background-color: var(--color-primary);
+    color: #ffffff !important;
+
+    border: 1px solid var(--color-primary);
+    border-radius: var(--botao-radius);
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition:
+        background-color var(--transition-speed),
+        border-color var(--transition-speed),
+        transform var(--transition-speed),
+        box-shadow var(--transition-speed);
+}
+
+.btn-upload-produto::before {
+    content: "📤";
+}
+
+.btn-upload-produto:hover {
+    background-color:
+        var(--color-primary-hover);
+
+    border-color:
+        var(--color-primary-hover);
+
+    box-shadow:
+        0 4px 12px
+        rgba(75, 107, 60, 0.35);
+
+    transform: translateY(-1px);
+}
+
+.btn-upload-produto:active {
+    transform: translateY(0);
+}
+
+/* Garante que o input oculto realmente não ocupe espaço */
+input[id^="upload-produto-"],
+#upload-arquivo-novo-produto {
+    display: none !important;
+}
+
+/* Organiza campo e botão na tabela */
+.admin-tabela td > div:has(.btn-upload-produto) {
+    min-width: 280px;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .admin-upload-imagem {
+        grid-column: 1;
+        padding: 11px;
+    }
+
+    .upload-area {
+        min-height: 125px;
+        padding: 16px;
+    }
+
+    #upload-previa-novo-produto {
+        width: 120px;
+        height: 105px;
+    }
+
+    .btn-upload-produto {
+        min-height: 38px;
+    }
+}

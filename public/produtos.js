@@ -300,6 +300,197 @@ function criarCardProduto(produto) {
 
 
 // =========================================================================
+// FUNÇÕES AUXILIARES DE UPLOAD DE IMAGEM
+// =========================================================================
+
+function validarArquivoImagem(arquivo) {
+    if (!arquivo) {
+        return 'Nenhuma imagem foi selecionada.';
+    }
+
+    const tiposPermitidos = [
+        'image/jpeg',
+        'image/png',
+        'image/webp'
+    ];
+
+    if (!tiposPermitidos.includes(arquivo.type)) {
+        return 'Use somente imagens JPG, JPEG, PNG ou WEBP.';
+    }
+
+    if (arquivo.size > 5 * 1024 * 1024) {
+        return 'A imagem deve ter no máximo 5 MB.';
+    }
+
+    return null;
+}
+
+async function fazerUploadImagem(arquivo) {
+    const formData = new FormData();
+    formData.append('imagem', arquivo);
+
+    const resposta = await fetch('/api/upload-imagem', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (resposta.status === 403) {
+        throw new Error('O upload direto está disponível somente no ambiente local.');
+    }
+
+    const resultado = await resposta.json();
+
+    if (!resposta.ok || !resultado.sucesso) {
+        throw new Error(
+            resultado.erro ||
+            resultado.mensagem ||
+            'Erro ao enviar imagem.'
+        );
+    }
+
+    return resultado;
+}
+
+export async function enviarImagemNovoProduto(arquivo) {
+    const erroValidacao = validarArquivoImagem(arquivo);
+    const statusDiv = document.getElementById('upload-status-novo-produto');
+    const previaDiv = document.getElementById('upload-previa-novo-produto');
+    const inputUrl = document.getElementById('adm-imagem-produto');
+
+    if (erroValidacao) {
+        if (statusDiv) statusDiv.textContent = erroValidacao;
+        throw new Error(erroValidacao);
+    }
+
+    if (statusDiv) statusDiv.textContent = 'Enviando imagem...';
+
+    try {
+        const resultado = await fazerUploadImagem(arquivo);
+
+        if (inputUrl) {
+            inputUrl.value = resultado.url;
+        }
+
+        if (previaDiv) {
+            previaDiv.innerHTML = `
+                <img
+                    src="${escaparAtributo(resultado.url)}"
+                    alt="Prévia da imagem"
+                    loading="lazy"
+                    decoding="async"
+                    onerror="
+                        this.style.display='none';
+                        this.nextElementSibling.style.display='block';
+                    "
+                >
+                <span class="admin-imagem-invalida" style="display:none;">
+                    Imagem inválida
+                </span>
+            `;
+        }
+
+        if (statusDiv) {
+            statusDiv.textContent = 'Imagem enviada com sucesso.';
+        }
+
+        return resultado.url;
+    } catch (erro) {
+        if (statusDiv) {
+            statusDiv.textContent = erro.message;
+        }
+        throw erro;
+    }
+}
+
+export async function enviarImagemProdutoExistente(id, arquivo) {
+    const erroValidacao = validarArquivoImagem(arquivo);
+    if (erroValidacao) {
+        alert(erroValidacao);
+        throw new Error(erroValidacao);
+    }
+
+    try {
+        const resultado = await fazerUploadImagem(arquivo);
+        const inputUrl = document.getElementById(`admin-imagem-${id}`);
+
+        if (inputUrl) {
+            inputUrl.value = resultado.url;
+        }
+
+        atualizarPreviaImagemAdmin(id);
+
+        if (window.AppState && Array.isArray(window.AppState.listaProdutosAtual)) {
+            const produtoEncontrado = window.AppState.listaProdutosAtual.find(
+                item => Number(item.id) === Number(id)
+            );
+            if (produtoEncontrado) {
+                produtoEncontrado.imagem = resultado.url;
+            }
+        }
+
+        return resultado.url;
+    } catch (erro) {
+        alert(erro.message);
+        throw erro;
+    }
+}
+
+function configurarUploadNovoProduto() {
+    const area = document.getElementById('upload-area-novo-produto');
+    const inputArquivo = document.getElementById('upload-arquivo-novo-produto');
+
+    if (!area || !inputArquivo) {
+        return;
+    }
+
+    if (area.dataset.configurado === 'true') {
+        return;
+    }
+    area.dataset.configurado = 'true';
+
+    area.addEventListener('click', () => {
+        inputArquivo.click();
+    });
+
+    area.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputArquivo.click();
+        }
+    });
+
+    inputArquivo.addEventListener('change', (e) => {
+        const arquivo = e.target.files[0];
+        if (arquivo) {
+            enviarImagemNovoProduto(arquivo).catch(erro => {
+                console.error('Erro no upload:', erro);
+            });
+        }
+    });
+
+    area.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        area.classList.add('arrastando');
+    });
+
+    area.addEventListener('dragleave', () => {
+        area.classList.remove('arrastando');
+    });
+
+    area.addEventListener('drop', (e) => {
+        e.preventDefault();
+        area.classList.remove('arrastando');
+        const arquivo = e.dataTransfer?.files?.[0];
+        if (arquivo) {
+            enviarImagemNovoProduto(arquivo).catch(erro => {
+                console.error('Erro no upload:', erro);
+            });
+        }
+    });
+}
+
+
+// =========================================================================
 // CADASTRO DE NOVO PRODUTO (VIA POST /api/produtos)
 // =========================================================================
 
@@ -742,11 +933,40 @@ value="1"
 placeholder="Qtd mínima"
 >
 
-<input
-id="adm-imagem-produto"
-type="text"
-placeholder="URL ou assets/imagem.webp"
->
+<div class="admin-upload-imagem">
+    <input
+        id="adm-imagem-produto"
+        type="text"
+        placeholder="/assets/produtos/imagem.jpg ou URL completa"
+    >
+
+    <div
+        id="upload-area-novo-produto"
+        class="upload-area"
+        tabindex="0"
+        role="button"
+    >
+        <strong>Arraste uma imagem aqui</strong>
+        <span>ou clique para escolher</span>
+
+        <input
+            id="upload-arquivo-novo-produto"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            hidden
+        >
+    </div>
+
+    <div
+        id="upload-status-novo-produto"
+        class="upload-status"
+    ></div>
+
+    <div
+        id="upload-previa-novo-produto"
+        class="admin-previa-imagem"
+    ></div>
+</div>
 
 <label>
 
@@ -861,15 +1081,27 @@ return `
     </td>
 
     <td>
-        <input
-            id="admin-imagem-${produto.id}"
-            class="admin-input-imagem"
-            type="text"
-            value="${escaparAtributo(imagem)}"
-            placeholder="assets/produto.webp ou URL completa"
-            oninput="atualizarPreviaImagemAdmin(${produto.id})"
-            aria-label="Imagem de ${escaparAtributo(produto.titulo)}"
-        >
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+            <input
+                id="admin-imagem-${produto.id}"
+                class="admin-input-imagem"
+                type="text"
+                value="${escaparAtributo(imagem)}"
+                placeholder="assets/produto.webp ou URL completa"
+                oninput="atualizarPreviaImagemAdmin(${produto.id})"
+                aria-label="Imagem de ${escaparAtributo(produto.titulo)}"
+            >
+            <label
+                class="btn-upload-produto"
+                for="upload-produto-${produto.id}">
+                Escolher imagem</label>
+            <input
+                id="upload-produto-${produto.id}"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                hidden
+                onchange="enviarImagemProdutoExistente(${produto.id}, this.files[0])">
+        </div>
     </td>
 
     <td>
@@ -938,6 +1170,8 @@ return `
 
 </div>
 `;
+
+    configurarUploadNovoProduto();
 }
 
 
@@ -980,7 +1214,7 @@ export function atualizarPreviaImagemAdmin(id) {
                 this.style.display='none';
                 this.nextElementSibling.style.display='block';
             "
-        >
+        />
 
         <span
             class="admin-imagem-invalida"

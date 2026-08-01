@@ -24,7 +24,9 @@ import {
     adicionarNovoProdutoAdmin,
     removerProdutoAdmin,
     salvarNovosPrecos,
-    atualizarPreviaImagemAdmin
+    atualizarPreviaImagemAdmin,
+    enviarImagemNovoProduto,
+    enviarImagemProdutoExistente
 } from './produtos.js';
 
 import {
@@ -709,3 +711,9 @@ window.realizarLogin =
 
 window.salvarCadastro =
     salvarCadastro;
+
+window.enviarImagemNovoProduto =
+    enviarImagemNovoProduto;
+
+window.enviarImagemProdutoExistente =
+    enviarImagemProdutoExistente;
